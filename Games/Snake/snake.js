@@ -1,3 +1,4 @@
+// snake.js - VERSIUNE OPTIMIZATĂ PENTRU MOBIL CU LAYOUT VERTICAL
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -5,6 +6,7 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const highScoreEl = document.getElementById('highScore');
 const speedEl = document.getElementById('speed');
+const timerEl = document.getElementById('timer');
 const startOverlay = document.getElementById('startOverlay');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const pauseOverlay = document.getElementById('pauseOverlay');
@@ -14,12 +16,19 @@ const restartBtn = document.getElementById('restartBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const newGameBtn = document.getElementById('newGameBtn');
 
-// Settings
-const gridSize = 20;
-const tileCount = 20;
-canvas.width = canvas.height = gridSize * tileCount;
+// Touch controls elements
+const upBtn = document.getElementById('upBtn');
+const downBtn = document.getElementById('downBtn');
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
+const pauseTouchBtn = document.getElementById('pauseTouchBtn');
+const restartTouchBtn = document.getElementById('restartTouchBtn');
 
-// State
+// Game settings
+let gridSize;
+const tileCount = 20;
+
+// Game state
 let snake = [{x: 10, y: 10}];
 let dx = 0;
 let dy = 0;
@@ -35,13 +44,15 @@ let isGameOver = false;
 let isPlaying = false;
 let gameLevel = 1;
 let gameStartTime = null;
+let gameTimer = null;
+let elapsedSeconds = 0;
 
 // Effects
 let particles = [];
 let foodPulse = 0;
 let eatAnimation = 0;
 
-// Audio context pentru sunete
+// Audio
 let audioContext;
 let soundEnabled = true;
 
@@ -51,19 +62,19 @@ highScoreEl.textContent = highScore;
 // Initialize audio
 function initAudio() {
     try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        // Încarcă preferința de sunet
-        const savedSound = localStorage.getItem('snakeSoundEnabled');
-        if (savedSound !== null) {
-            soundEnabled = savedSound === 'true';
+        if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const savedSound = localStorage.getItem('snakeSoundEnabled');
+            soundEnabled = savedSound !== null ? savedSound === 'true' : true;
+        } else {
+            soundEnabled = false;
         }
     } catch (e) {
-        console.log('Audio not supported');
         soundEnabled = false;
     }
 }
 
-// Sunet simplu și rapid
+// Play sound
 function playSound(type) {
     if (!soundEnabled || !audioContext) return;
     
@@ -76,8 +87,7 @@ function playSound(type) {
         
         switch(type) {
             case 'eat':
-                // Sunet scurt și plăcut pentru mâncare
-                oscillator.frequency.value = 523.25; // C5
+                oscillator.frequency.value = 523.25;
                 oscillator.type = 'sine';
                 gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
@@ -86,8 +96,7 @@ function playSound(type) {
                 break;
                 
             case 'move':
-                // Sunet foarte scurt pentru mișcare
-                oscillator.frequency.value = 220; // A3
+                oscillator.frequency.value = 220;
                 oscillator.type = 'triangle';
                 gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
@@ -96,31 +105,20 @@ function playSound(type) {
                 break;
                 
             case 'gameOver':
-                // Sunet de game over
-                oscillator.frequency.value = 174.61; // F3
+                oscillator.frequency.value = 174.61;
                 oscillator.type = 'sawtooth';
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
                 break;
-                
-            case 'level':
-                // Sunet scurt de nivel
-                oscillator.frequency.value = 659.25; // E5
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.2);
-                break;
         }
     } catch (e) {
-        console.log('Sound error:', e);
+        soundEnabled = false;
     }
 }
 
-// Particle System rapid
+// Particle System
 class Particle {
     constructor(x, y, color) {
         this.x = x;
@@ -130,7 +128,7 @@ class Particle {
         this.speedX = Math.random() * 6 - 3;
         this.speedY = Math.random() * 6 - 3;
         this.life = 1;
-        this.decay = 0.15; // Foarte rapidă
+        this.decay = 0.15;
     }
     
     update() {
@@ -154,7 +152,6 @@ class Particle {
 }
 
 function createEatParticles(x, y) {
-    // Particule rapide și puține
     for (let i = 0; i < 8; i++) {
         particles.push(new Particle(
             x * gridSize + gridSize/2,
@@ -162,7 +159,7 @@ function createEatParticles(x, y) {
             '#ff6b9d'
         ));
     }
-    eatAnimation = 1; // Start rapid eat animation
+    eatAnimation = 1;
     playSound('eat');
 }
 
@@ -179,15 +176,14 @@ function drawParticles() {
     particles.forEach(particle => particle.draw());
 }
 
-// Draw functions
+// Drawing functions
 function drawRect(x, y, color, isHead = false) {
     ctx.fillStyle = color;
     
     if (isHead) {
-        // Cap cu ochi
         ctx.fillRect(x * gridSize + 2, y * gridSize + 2, gridSize - 4, gridSize - 4);
         
-        // Ochi
+        // Eyes
         ctx.fillStyle = '#fff';
         const eyeSize = gridSize / 8;
         ctx.beginPath();
@@ -201,21 +197,16 @@ function drawRect(x, y, color, isHead = false) {
         ctx.arc(x * gridSize + 2*gridSize/3, y * gridSize + gridSize/3, eyeSize/2, 0, Math.PI * 2);
         ctx.fill();
     } else {
-        // Corp simplu
         ctx.fillRect(x * gridSize + 2, y * gridSize + 2, gridSize - 4, gridSize - 4);
-        
-        // Highlight interior
         ctx.fillStyle = '#6BCF7F';
         ctx.fillRect(x * gridSize + 4, y * gridSize + 4, gridSize - 8, gridSize - 8);
     }
 }
 
 function drawFood() {
-    // Animatie pulsare rapidă
     foodPulse += 0.25;
     const pulseSize = Math.sin(foodPulse) * 1.5 + 1;
     
-    // Mâncare cu gradient
     const gradient = ctx.createRadialGradient(
         food.x * gridSize + gridSize/2,
         food.y * gridSize + gridSize/2,
@@ -238,7 +229,6 @@ function drawFood() {
     );
     ctx.fill();
     
-    // Highlight
     ctx.fillStyle = '#fff';
     ctx.beginPath();
     ctx.arc(
@@ -271,7 +261,6 @@ function drawSnake() {
         drawRect(seg.x, seg.y, i === 0 ? '#2d7a2f' : '#4CAF50', i === 0);
     });
     
-    // Eat animation - rapidă și subtilă
     if (eatAnimation > 0) {
         const head = snake[0];
         ctx.fillStyle = `rgba(255, 107, 157, ${eatAnimation})`;
@@ -284,7 +273,7 @@ function drawSnake() {
             Math.PI * 2
         );
         ctx.fill();
-        eatAnimation -= 0.4; // Decădere foarte rapidă
+        eatAnimation -= 0.4;
     }
 }
 
@@ -302,21 +291,33 @@ function generateFood() {
     }
 }
 
-// Calculează nivelul pe baza scorului
+// Timer functions
+function startTimer() {
+    elapsedSeconds = 0;
+    updateTimer();
+    clearInterval(gameTimer);
+    gameTimer = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    elapsedSeconds++;
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+    timerEl.textContent = minutes > 0 ? `${minutes}:${seconds.toString().padStart(2, '0')}` : `${seconds}s`;
+}
+
+function stopTimer() {
+    clearInterval(gameTimer);
+}
+
+// Level calculation
 function calculateLevel() {
     const newLevel = Math.floor(score / 5) + 1;
     
     if (newLevel > gameLevel) {
         gameLevel = newLevel;
         speedEl.textContent = gameLevel;
-        
-        // Mărește viteza (mai rapid la fiecare nivel)
         speed = Math.max(80, 150 - (gameLevel - 1) * 20);
-        
-        // Sunet scurt de nivel
-        playSound('level');
-        
-        // Doar update UI, fără pop-up
         clearInterval(gameLoop);
         gameLoop = setInterval(update, speed);
     }
@@ -324,18 +325,11 @@ function calculateLevel() {
     return gameLevel;
 }
 
-// Calculează XP (doar dacă e logat și scor > 0)
+// XP calculation
 function calculateXP(score, level, durationSeconds) {
-    // Dacă scorul este 0, nu primește XP
-    if (score === 0) {
-        return 0;
-    }
+    if (score === 0) return 0;
+    if (!window.currentUserId || !window.isUserLoggedIn) return 0;
     
-    if (!window.currentUserId || !window.isUserLoggedIn) {
-        return 0;
-    }
-    
-    // XP simplu: 2 XP per mâncare + 10 XP pe minut
     const foodXP = score * 2;
     const timeXP = Math.floor(durationSeconds / 60 * 10);
     const levelBonus = level * 3;
@@ -343,9 +337,8 @@ function calculateXP(score, level, durationSeconds) {
     return Math.max(10, foodXP + timeXP + levelBonus);
 }
 
-// Creează o notificare temporară pe ecran
+// XP Notification
 function showXPEarnedNotification(xpAmount) {
-    // Afișează notificarea doar dacă există XP și utilizatorul e conectat
     if (!xpAmount || xpAmount <= 0 || !window.isUserLoggedIn) return;
     
     const notification = document.createElement('div');
@@ -357,24 +350,6 @@ function showXPEarnedNotification(xpAmount) {
         </div>
     `;
     
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        z-index: 1000;
-        animation: slideInRight 0.3s ease-out, fadeOut 3s ease-in 2s forwards;
-        font-weight: bold;
-        font-size: 1.1em;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    `;
-    
     document.body.appendChild(notification);
     
     setTimeout(() => {
@@ -384,6 +359,7 @@ function showXPEarnedNotification(xpAmount) {
     }, 3000);
 }
 
+// Game logic
 function update() {
     if(isPaused || !isPlaying) return;
     
@@ -392,7 +368,6 @@ function update() {
     
     if(dx === 0 && dy === 0) return;
     
-    // Sunet de mișcare (mai rar pentru a nu fi enervant)
     if (Math.random() > 0.7) {
         playSound('move');
     }
@@ -416,12 +391,9 @@ function update() {
     if(head.x === food.x && head.y === food.y) {
         score++;
         scoreEl.textContent = score;
-        
-        // Animație rapidă de mâncare
         createEatParticles(food.x, food.y);
-        
         generateFood();
-        calculateLevel(); // Doar update UI, fără pop-up
+        calculateLevel();
     } else {
         snake.pop();
     }
@@ -439,11 +411,12 @@ function draw() {
 }
 
 function startGame() {
-    // Initializează audio la prima rulare
+    // Initialize audio
     if (!audioContext) {
         initAudio();
     }
     
+    // Reset game state
     snake = [{x: 10, y: 10}];
     dx = 1;
     dy = 0;
@@ -459,17 +432,29 @@ function startGame() {
     particles = [];
     eatAnimation = 0;
     
+    // Update UI
     scoreEl.textContent = score;
     speedEl.textContent = gameLevel;
     
+    // Hide overlays
     startOverlay.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     pauseOverlay.classList.add('hidden');
     
+    // Resize canvas
+    resizeCanvas();
+    
+    // Generate food
     generateFood();
     
+    // Start game loop
     if(gameLoop) clearInterval(gameLoop);
     gameLoop = setInterval(update, speed);
+    
+    // Start timer
+    startTimer();
+    
+    // Draw initial state
     draw();
 }
 
@@ -477,21 +462,21 @@ async function endGame() {
     isPlaying = false;
     isGameOver = true;
     clearInterval(gameLoop);
+    stopTimer();
     
-    // Sunet de game over
     playSound('gameOver');
     
     finalScoreEl.textContent = score;
     gameOverScreen.classList.remove('hidden');
     
-    // Salvează high score pentru toți
+    // Save high score
     if(score > highScore) {
         highScore = score;
         localStorage.setItem('snakeHighScore', highScore);
         highScoreEl.textContent = highScore;
     }
     
-    // Calculează și salvează XP doar pentru cei logați și doar dacă scorul > 0
+    // Calculate and save XP
     if (gameStartTime && score > 0) {
         const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
         const xpEarned = calculateXP(score, gameLevel, gameDuration);
@@ -499,7 +484,7 @@ async function endGame() {
         if (xpEarned > 0) {
             showXPEarnedNotification(xpEarned);
             
-            // Salvează în Firebase
+            // Save to Firebase
             if (window.saveGameToFirebase) {
                 await window.saveGameToFirebase(score, xpEarned, gameDuration, gameLevel);
             }
@@ -515,13 +500,93 @@ function togglePause() {
     if(isPaused) {
         pauseOverlay.classList.remove('hidden');
         pauseBtn.innerHTML = '<span class="btn-icon">▶</span><span class="btn-text">Resume</span>';
+        pauseTouchBtn.textContent = '▶';
+        stopTimer();
     } else {
         pauseOverlay.classList.add('hidden');
         pauseBtn.innerHTML = '<span class="btn-icon">⏸</span><span class="btn-text">Pause</span>';
+        pauseTouchBtn.textContent = '⏸';
+        startTimer();
     }
 }
 
-// Controls
+// Resize canvas for responsive design
+function resizeCanvas() {
+    const container = canvas.parentElement;
+    const size = Math.min(container.clientWidth - 32, 500);
+    
+    canvas.width = size;
+    canvas.height = size;
+    gridSize = Math.floor(size / tileCount);
+}
+
+// Touch controls setup
+function setupTouchControls() {
+    // Direction buttons
+    upBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(dy === 0) { nextDx = 0; nextDy = -1; }
+    });
+    
+    downBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(dy === 0) { nextDx = 0; nextDy = 1; }
+    });
+    
+    leftBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(dx === 0) { nextDx = -1; nextDy = 0; }
+    });
+    
+    rightBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(dx === 0) { nextDx = 1; nextDy = 0; }
+    });
+    
+    // Mouse support for desktop
+    upBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(dy === 0) { nextDx = 0; nextDy = -1; }
+    });
+    
+    downBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(dy === 0) { nextDx = 0; nextDy = 1; }
+    });
+    
+    leftBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(dx === 0) { nextDx = -1; nextDy = 0; }
+    });
+    
+    rightBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(dx === 0) { nextDx = 1; nextDy = 0; }
+    });
+    
+    // Control buttons
+    pauseTouchBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        togglePause();
+    });
+    
+    restartTouchBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startGame();
+    });
+    
+    pauseTouchBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        togglePause();
+    });
+    
+    restartTouchBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startGame();
+    });
+}
+
+// Keyboard controls
 document.addEventListener('keydown', (e) => {
     const key = e.key.toLowerCase();
     
@@ -548,56 +613,84 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Buttons
+// Swipe controls for mobile
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener('touchstart', (e) => {
+    if (!isPlaying) {
+        startGame();
+        return;
+    }
+    
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+});
+
+canvas.addEventListener('touchmove', (e) => {
+    if (!isPlaying) return;
+    e.preventDefault();
+});
+
+canvas.addEventListener('touchend', (e) => {
+    if (!isPlaying) return;
+    
+    const touch = e.changedTouches[0];
+    const touchEndX = touch.clientX;
+    const touchEndY = touch.clientY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+    
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (diffX > 0 && dx === 0) {
+            nextDx = 1; nextDy = 0;
+        } else if (diffX < 0 && dx === 0) {
+            nextDx = -1; nextDy = 0;
+        }
+    } else {
+        // Vertical swipe
+        if (diffY > 0 && dy === 0) {
+            nextDx = 0; nextDy = 1;
+        } else if (diffY < 0 && dy === 0) {
+            nextDx = 0; nextDy = -1;
+        }
+    }
+});
+
+// Button event listeners
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
 newGameBtn.addEventListener('click', startGame);
 pauseBtn.addEventListener('click', togglePause);
 pauseOverlay.addEventListener('click', togglePause);
 
-// Initial draw și audio init
+// Prevent default touch behavior
+document.addEventListener('touchmove', function(e) {
+    if(e.target.classList.contains('touch-btn') || e.target === canvas) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+// Initialize game
 initAudio();
+setupTouchControls();
+resizeCanvas();
 draw();
 
-// Adaugă animațiile CSS
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+// Handle window resize
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    if (isPlaying) {
+        draw();
     }
-    
-    @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; }
-    }
-    
-    .xp-notification-content {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .xp-icon {
-        font-size: 1.5em;
-        animation: xpPulse 1s infinite;
-    }
-    
-    @keyframes xpPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
-    }
-`;
-document.head.appendChild(style);
+});
 
-// Auto-save doar pentru cei logați și doar dacă scorul > 0
+// Auto-save on exit
 window.addEventListener('beforeunload', async (e) => {
     if (isPlaying && score > 0 && gameStartTime && window.saveGameToFirebase && window.isUserLoggedIn) {
         const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
@@ -609,7 +702,7 @@ window.addEventListener('beforeunload', async (e) => {
     }
 });
 
-// Blochează scrolling-ul pentru tastele jocului
+// Prevent scrolling with arrow keys
 document.addEventListener('keydown', function(e) {
     const gameControlKeys = [
         'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
