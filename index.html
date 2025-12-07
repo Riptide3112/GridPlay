@@ -102,8 +102,52 @@
                 });
             }
         });
+        document.addEventListener('DOMContentLoaded', () => {
+    // --- Logica de Navigare Cont (Răspunde cerinței din index.html) ---
+    const accountLink = document.getElementById('account-link');
+
+    if (accountLink) {
+        // Prevenim comportamentul implicit al link-ului
+        accountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Verificăm starea de autentificare în localStorage
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            if (isLoggedIn === 'true') {
+                // Dacă utilizatorul este logat, îl trimitem la pagina contului
+                window.location.href = '/account.html';
+            } else {
+                // Dacă NU este logat, îl trimitem la pagina de login
+                // NOTA: Schimbați /login.html cu adresa reală a paginii de login (ex: /account.html)
+                window.location.href = '/login.html';
+            }
+        });
+    }
+
+    // --- Logica de Navigare Jocuri (Nou Adăugat) ---
+    const gameCards = document.querySelectorAll('.game-card');
+
+    gameCards.forEach(card => {
+        const playButton = card.querySelector('.play-btn');
+        const gameUrl = card.getAttribute('data-game');
+
+        if (playButton && gameUrl) {
+            // Adaugă ascultător de evenimente pe butonul "Play Now"
+            playButton.addEventListener('click', () => {
+                window.location.href = gameUrl;
+            });
+
+            // Opțional: Deschide jocul la click pe întreg cardul
+            // card.addEventListener('click', () => {
+            //     window.location.href = gameUrl;
+            // });
+        }
+    });
+});
     </script>
     <script src="script.js"></script>
 </body>
+
 
 </html>
