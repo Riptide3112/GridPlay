@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | GridPlay</title>
+    <meta name="description" content="Log in to your GridPlay account.">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- STILURI AUTENTIFICARE PRINCIPALE (EXISTENTE) --- */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+        }
+
+        .auth-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #7a5d4a;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            display: inline-block;
+            letter-spacing: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .auth-card h2 {
+            color: #9a8171;
+            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #7a5d4a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid rgba(122, 93, 74, 0.2);
+            border-radius: 15px;
+            background-color: #fff;
+            color: #5a4a3a;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: #ff9a76;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 154, 118, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+            margin-top: 1rem;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #9a8171;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(122, 93, 74, 0.2);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.9rem;
+            background-color: white;
+            color: #5a4a3a;
+            border: 2px solid rgba(122, 93, 74, 0.2);
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .google-btn:hover {
+            background-color: #fdf5ec;
+            border-color: #ff9a76;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-footer-links {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: #9a8171;
+        }
+
+        .auth-footer-links a {
+            color: #ff6b9d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .auth-footer-links a:hover {
+            color: #ff9a76;
+        }
+
+        #error-message {
+            color: #D32F2F;
+            background-color: #fce7e7;
+            border: 1px solid #D32F2F;
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        footer {
+            background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 30px 30px 0 0;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 2rem;
+            }
+
+            .auth-logo {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* --- STILURI MODAL NOU --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 20;
+            min-width: 350px;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            color: #7a5d4a;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #5a4a3a;
+            margin-bottom: 25px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .modal-actions button {
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-grow: 0;
+            font-size: 1rem;
+            
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(255, 107, 157, 0.3);
+        }
+
+        .modal-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+    <main class="auth-container">
+        <div class="auth-card">
+            <a href="index.html" class="auth-logo">GridPlay</a>
+            <h2>Welcome back! Ready to play?</h2>
+
+            <div id="error-message"></div>
+
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="auth-btn" id="login-btn">Log In</button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <button class="google-btn" id="google-login-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
+                Continue with Google
+            </button>
+
+            <div class="auth-footer-links">
+                Don't have an account? <a href="register.html">Sign Up</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </footer>
+
+    <div id="status-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title"></h3>
+            <p id="modal-content-text"></p>
+
+            <div class="modal-actions">
+                <button id="modal-action-btn"></button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- 1. IMPORTURI FIREBASE ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            onAuthStateChanged,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            get
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // --- 2. CONFIGURAȚIE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // --- 3. VARIABILE DOM ---
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        let authStateUnsubscribe; // Variabilă pentru a stoca funcția de dezabonare
+
+        // --- 4. FUNCȚII UTITARE ---
+
+        const displayError = (message) => {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        };
+
+        const clearError = () => {
+             errorMessage.textContent = '';
+             errorMessage.style.display = 'none';
+        }
+
+        const showCustomModal = (title, message, buttonText, actionUrl) => {
+            const modal = document.getElementById('status-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContentText = document.getElementById('modal-content-text');
+            const actionBtn = document.getElementById('modal-action-btn');
+
+            if (!modal || !modalTitle || !actionBtn) {
+                console.error("Modal elements not found. Fallback redirection.");
+                window.location.href = actionUrl;
+                return;
+            }
+
+            modalTitle.textContent = title;
+            modalContentText.textContent = message;
+            actionBtn.textContent = buttonText;
+
+            // Clone & Replace pentru a elimina orice ascultător vechi
+            const newActionBtn = actionBtn.cloneNode(true);
+            actionBtn.parentNode.replaceChild(newActionBtn, actionBtn);
+
+            newActionBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                window.location.href = actionUrl;
+            }, { once: true });
+
+            modal.style.display = 'block';
+        };
+        
+        // --- 5. LOGICA INIȚIALĂ ȘI FALLBACK ---
+
+        // Functia de verificare si redirectionare
+        const checkAndRedirect = (user) => {
+             if (user && localStorage.getItem('isLoggedIn') !== 'true') {
+                 localStorage.setItem('isLoggedIn', 'true');
+                 window.location.href = 'account.html';
+                 // Adăugăm throw pentru a opri execuția scriptului
+                 throw new Error("Redirecting to account page."); 
+             }
+        };
+
+        // Subscrierea inițială la onAuthStateChanged
+        authStateUnsubscribe = onAuthStateChanged(auth, (user) => {
+            // Se execută doar dacă nu suntem deja logați local
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                checkAndRedirect(user);
+            }
+        });
+
+        // Verificare sesiune imediată (Redirecționează dacă localStorage este setat)
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'account.html';
+            throw new Error("Already logged in. Redirecting...");
+        }
+
+        // --- 6. HANDLERE DE LOGIN ---
+
+        // Login cu Email și Parolă
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError();
+            
+            // Dezabonare temporară de la onAuthStateChanged pentru a evita conflictele de stare
+            if (authStateUnsubscribe) {
+                 authStateUnsubscribe();
+            }
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            // ... (restul logicii de login cu email) ...
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                localStorage.setItem('isLoggedIn', 'true');
+                console.log("Login successful:", userCredential.user);
+                window.location.href = 'account.html';
+            } catch (error) {
+                console.error("Login failed:", error.code);
+                // La eșec, resubscriem sau pur și simplu afișăm eroarea
+                // Re-subscriem onAuthStateChanged pentru a menține logica consistentă
+                 authStateUnsubscribe = onAuthStateChanged(auth, checkAndRedirect); 
+
+                let userMessage;
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        userMessage = "Email sau parolă incorectă. Vă rugăm verificați datele.";
+                        break;
+                    case 'auth/too-many-requests':
+                        userMessage = "Prea multe încercări eșuate. Încercați mai târziu.";
+                        break;
+                    default:
+                        userMessage = "Autentificarea a eșuat. Verificați conexiunea.";
+                }
+                displayError(userMessage);
+            }
+        });
+
+        // Login cu Google (LOGICĂ CORECTATĂ CRITIC)
+        googleLoginBtn.addEventListener('click', async () => {
+            clearError();
+            
+            // PAS CRITIC 1: Dezabonare de la listener-ul global
+            if (authStateUnsubscribe) {
+                 authStateUnsubscribe();
+                 console.log("Unsubscribed from onAuthStateChanged.");
+            }
+
+            try {
+                // Autentificarea reușește, userul este logat în Auth.
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+
+                // 1. Verificăm dacă există datele utilizatorului în RTDB
+                const playerStatsRef = ref(database, 'playerStats/' + user.uid);
+                const snapshot = await get(playerStatsRef);
+
+                if (snapshot.exists()) {
+                    // Cazul 1: Utilizator existent în Auth și RTDB - Login reușit
+                    localStorage.setItem('isLoggedIn', 'true');
+                    console.log("[GOOGLE] Login reușit. Date RTDB existente.");
+                    window.location.href = 'account.html';
+
+                } else {
+                    // Cazul 2: Utilizatorul este autentificat prin Google, dar NU are date în RTDB (utilizator nou)
+                    
+                    console.log("[GOOGLE] Utilizator nou detectat. Forțăm deconectarea și afișăm modal.");
+                    
+                    // PAS CRITIC 2: Deconectăm utilizatorul din Firebase Auth IMEDIAT după verificare
+                    await signOut(auth); 
+                    localStorage.removeItem('isLoggedIn'); // Curățăm localStorage
+
+                    // Afișăm modalul solicitat
+                    showCustomModal(
+                        "Account Not Found ⚠️",
+                        "It looks like you don't have a GridPlay account yet. Please sign up to start playing.",
+                        "Sign Up Now",
+                        "register.html" // Link către pagina de înregistrare
+                    );
+                    
+                    // PAS CRITIC 3: Aruncăm o excepție aici pentru a opri execuția ulterioară
+                    throw new Error("New Google user requires registration."); 
+                }
+
+            } catch (error) {
+                // Dacă pop-up-ul a fost închis sau a apărut o eroare, resubscriem listener-ul
+                // Dacă eroarea este 'New Google user requires registration.', nu resubscriem, modalul rămâne vizibil.
+                if (error.message !== "New Google user requires registration.") {
+                     authStateUnsubscribe = onAuthStateChanged(auth, checkAndRedirect);
+                }
+
+                console.error("Google Authentication Error:", error.code || error.message);
+
+                let userMessage;
+                if (error.code === 'auth/popup-closed-by-user') {
+                    userMessage = "Fereastra de autentificare Google a fost închisă.";
+                } else if (error.code === 'auth/account-exists-with-different-credential') {
+                    userMessage = "Un cont cu acest email există deja, dar a fost creat cu o altă metodă (ex: Email/Parolă). Vă rugăm folosiți metoda originală.";
+                } else if (error.message !== "New Google user requires registration.") {
+                    // Afișăm erorile standard doar dacă nu este eroarea noastră de control.
+                    userMessage = "Autentificarea cu Google a eșuat. Încercați din nou.";
+                    displayError(userMessage);
+                }
+                
+            }
+        });
+    </script>
+</body>
+</html>

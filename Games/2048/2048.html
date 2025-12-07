@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - GridPlay</title>
+    <link rel="stylesheet" href="2048.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="../../index.html" class="back-btn">← Back</a>
+            <a href="../../index.html" class="logo">GridPlay</a>
+            <a href="../../account.html" class="account-btn">
+                <span class="account-icon">👤</span>
+                Account
+            </a>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title-section">
+                <div class="game-icon-large">🎯</div>
+                <div>
+                    <h1>2048</h1>
+                    <p>Join the tiles, get to 2048!</p>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="score">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="bestScore">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎮</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Moves</span>
+                        <span class="stat-value" id="moves">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="game-info">
+                <p class="game-instructions">
+                    <strong>How to play:</strong> Use arrow keys (or swipe) to move tiles.
+                    When two tiles with the same number touch, they merge into one!
+                </p>
+            </div>
+
+            <div class="grid-wrapper">
+                <div class="grid-container" id="gridContainer">
+                    <div class="grid-background" id="gridBackground"></div>
+                    <div class="grid-tiles" id="gridTiles"></div>
+                </div>
+
+                <div id="startBanner" class="start-banner">
+                    <div class="banner-content">
+                        <h3>Ready to Play?</h3>
+                        <p>Use arrow keys or swipe to move tiles</p>
+                        <button id="startBtn" class="primary-btn">Start Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button class="control-button" id="undoBtn">
+                    <span class="btn-icon">↶</span>
+                    <span class="btn-text">Undo</span>
+                </button>
+                <button class="control-button" id="newGameBtn">
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">New Game</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="winOverlay" class="game-overlay hidden">
+            <div class="overlay-content">
+                <div class="win-icon">🎉</div>
+                <h2>You Win!</h2>
+                <p class="win-stats">
+                    You reached <strong>2048</strong>!<br>
+                    Score: <span id="winScore">0</span><br>
+                    Moves: <span id="winMoves">0</span>
+                    <span id="winXP" class="xp-text hidden">+0 XP</span>
+                </p>
+                <div class="overlay-buttons">
+                    <button id="continueBtn" class="primary-btn">Keep Playing</button>
+                    <button id="newGameWinBtn" class="secondary-btn">New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameOverOverlay" class="game-overlay hidden">
+            <div class="overlay-content">
+                <div class="gameover-icon">😢</div>
+                <h2>Game Over!</h2>
+                <p class="gameover-stats">
+                    No more moves available<br>
+                    Final Score: <span id="finalScore">0</span><br>
+                    Total Moves: <span id="finalMoves">0</span>
+                    <span id="finalXP" class="xp-text hidden">+0 XP</span>
+                </p>
+                <button id="tryAgainBtn" class="primary-btn">Try Again</button>
+            </div>
+        </div>
+
+        <div class="instructions-card">
+            <div class="instructions-header">
+                <h3>🎮 Game Tips</h3>
+                <div class="best-record">
+                    Best Score: <span id="recordScore">0</span>
+                </div>
+            </div>
+            <div class="instructions-list">
+                <p>• <strong>Desktop:</strong> Use arrow keys (↑ ↓ ← →) to move tiles</p>
+                <p>• <strong>Mobile:</strong> Swipe in any direction to move tiles</p>
+                <p>• Tiles with the same number merge when they touch</p>
+                <p>• Each move adds a new tile (2 or 4) to the board</p>
+                <p>• Try to reach the 2048 tile!</p>
+                <p>• Keep your highest tiles in one corner</p>
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2024 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="../../privacy.html">Privacy Policy</a>
+            <a href="../../terms.html">Terms of Service</a>
+            <a href="../../contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Importă Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            get,
+            update,
+            push
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // Configurație Firebase (folosește aceeași ca în account.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+        };
+
+        // Inițializează Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // Variabile globale
+        window.currentUserId = null;
+        window.isUserLoggedIn = false;
+
+        // Verifică dacă utilizatorul este autentificat
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUserId = user.uid;
+                window.isUserLoggedIn = true;
+                loadBestScore();
+            } else {
+                window.isUserLoggedIn = false;
+                window.currentUserId = null;
+                // Folosește best score din localStorage
+                const localBest = parseInt(localStorage.getItem('2048BestScore')) || 0;
+                document.getElementById('recordScore').textContent = localBest;
+            }
+        });
+
+        async function loadBestScore() {
+            if (!window.currentUserId) return;
+
+            try {
+                const snapshot = await get(ref(database, `gameSessions/${window.currentUserId}/game2048/bestScore`));
+                if (snapshot.exists()) {
+                    const bestScore = snapshot.val();
+                    localStorage.setItem('2048BestScore', bestScore);
+                    document.getElementById('recordScore').textContent = bestScore;
+                }
+            } catch (error) {
+                console.error("Error loading best score:", error);
+            }
+        }
+
+        // Funcție pentru a salva progresul jocului în Firebase
+        window.save2048Progress = async function (score, moves, xpEarned, gameDuration, highestTile, gameCompleted = false) {
+            if (!window.currentUserId || !window.isUserLoggedIn) {
+                return 0; // Nu salva dacă nu e logat
+            }
+
+            try {
+                const updates = {};
+                const playTimeMinutes = Math.max(1, Math.floor(gameDuration / 60));
+
+                // Obține datele jucătorului
+                const playerRef = ref(database, `playerStats/${window.currentUserId}`);
+                const playerSnapshot = await get(playerRef);
+
+                if (!playerSnapshot.exists()) return 0;
+
+                const playerData = playerSnapshot.val();
+
+                // Update best score
+                const currentBestScore = await get(ref(database, `gameSessions/${window.currentUserId}/game2048/bestScore`));
+                const bestScoreValue = currentBestScore.exists() ? currentBestScore.val() : 0;
+
+                if (score > bestScoreValue) {
+                    updates[`gameSessions/${window.currentUserId}/game2048/bestScore`] = score;
+                    localStorage.setItem('2048BestScore', score);
+                }
+
+                // Increment minutes played
+                const currentMinutes = playerData.minutesPlayed || 0;
+                updates[`playerStats/${window.currentUserId}/minutesPlayed`] = currentMinutes + playTimeMinutes;
+
+                // Increment games completed DOAR dacă a terminat jocul (a ajuns la 2048)
+                if (gameCompleted) {
+                    updates[`playerStats/${window.currentUserId}/gamesCompleted`] = (playerData.gamesCompleted || 0) + 1;
+                }
+
+                // Adaugă XP
+                const currentXp = playerData.currentXp || 0;
+                updates[`playerStats/${window.currentUserId}/currentXp`] = currentXp + xpEarned;
+
+                // Verifică level up
+                let level = playerData.level || 1;
+                let nextLevelXp = playerData.nextLevelXp || 500;
+                let newXp = currentXp + xpEarned;
+
+                if (newXp >= nextLevelXp) {
+                    level += 1;
+                    nextLevelXp = Math.floor(nextLevelXp * 1.5);
+                    updates[`playerStats/${window.currentUserId}/level`] = level;
+                    updates[`playerStats/${window.currentUserId}/nextLevelXp`] = nextLevelXp;
+                }
+
+                // Salvează sesiunea
+                const sessionData = {
+                    score: score,
+                    moves: moves,
+                    xpEarned: xpEarned,
+                    highestTile: highestTile,
+                    gameCompleted: gameCompleted,
+                    timePlayed: playTimeMinutes,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toLocaleDateString()
+                };
+
+                await push(ref(database, `gameSessions/${window.currentUserId}/game2048/sessions`), sessionData);
+
+                // Aplică update-urile
+                await update(ref(database), updates);
+
+                console.log(`2048 saved! Score: ${score}, XP: +${xpEarned}, Game Completed: ${gameCompleted}`);
+                return xpEarned;
+
+            } catch (error) {
+                console.error("Error saving 2048:", error);
+                return 0;
+            }
+        };
+
+        // Funcție pentru a actualiza best score în UI
+        function updateBestScoreUI(bestScore) {
+            // Această funcție va fi apelată din 2048.js
+            if (window.update2048BestScore) {
+                window.update2048BestScore(bestScore);
+            }
+        }
+
+        // Expune funcții globale
+        window.getCurrentUserId = () => window.currentUserId;
+        window.getIsUserLoggedIn = () => window.isUserLoggedIn;
+
+    </script>
+
+    <script src="2048.js"></script>
+</body>
+
+</html>

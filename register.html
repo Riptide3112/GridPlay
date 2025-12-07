@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | GridPlay</title>
+    <meta name="description" content="Create your GridPlay account and start playing.">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Your gradient background */
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+        }
+
+        .auth-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            /* Login/register card style */
+            background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #7a5d4a;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            display: inline-block;
+            letter-spacing: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Adapted H2 selector from your original design to style H1/P.subtitle */
+        .auth-card h1 {
+            color: #7a5d4a;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-card .subtitle {
+            color: #9a8171;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            /* Adjusted spacing */
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            /* Adjusted spacing */
+            color: #7a5d4a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            /* Adjusted padding */
+            border: 2px solid rgba(122, 93, 74, 0.2);
+            border-radius: 15px;
+            /* Adjusted border radius */
+            background-color: #fff;
+            color: #5a4a3a;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: #ff9a76;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 154, 118, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            /* Adjusted padding */
+            margin-top: 1rem;
+            /* Adjusted margin */
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            /* Adjusted border radius */
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+        }
+
+        /* Renamed .or-separator to .divider for consistency with your initial design */
+        .or-separator,
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            /* Adjusted spacing */
+            color: #9a8171;
+            font-size: 0.9rem;
+            position: static;
+        }
+
+        .or-separator::before,
+        .or-separator::after,
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(122, 93, 74, 0.2);
+            /* Color from initial design */
+            position: static;
+            width: auto;
+        }
+
+        .or-separator span,
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Google Button style adjusted for consistency with initial design */
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.9rem;
+            /* Adjusted padding */
+            background-color: white;
+            color: #5a4a3a;
+            border: 2px solid rgba(122, 93, 74, 0.2);
+            /* Border from initial design */
+            border-radius: 20px;
+            /* Adjusted border radius */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 0;
+        }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .google-btn:hover {
+            background-color: #fdf5ec;
+            border-color: #ff9a76;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Error Messages */
+        .message-container {
+            padding: 12px;
+            /* Adjusted padding */
+            border-radius: 15px;
+            /* Adjusted border radius */
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .error-message {
+            color: #D32F2F;
+            background-color: #fce7e7;
+            border: 1px solid #D32F2F;
+        }
+
+        /* Footer links */
+        .login-link {
+            margin-top: 2rem;
+            /* Adjusted spacing */
+            font-size: 0.95rem;
+            color: #9a8171;
+        }
+
+        .login-link a {
+            color: #ff6b9d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #ff9a76;
+        }
+
+
+        /* --- MODAL STYLES (Kept consistent with the main design) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Using the main card styles */
+            background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 20;
+            min-width: 350px;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            color: #7a5d4a;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #5a4a3a;
+            margin-bottom: 25px;
+        }
+
+        #modal-referral-input {
+            /* Input style from the main form */
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            margin: 10px 0 20px 0;
+            border: 2px solid #ff6b9d;
+            border-radius: 15px;
+            box-sizing: border-box;
+            font-size: 1.1rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .modal-buttons,
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .modal-buttons button,
+        .modal-actions button {
+            /* General button style */
+            padding: 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-grow: 1;
+            font-size: 1rem;
+        }
+
+        #modal-apply-btn {
+            /* Primary button style (AUTH-BTN) */
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(255, 107, 157, 0.3);
+        }
+
+        #modal-apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+        }
+
+        #modal-skip-btn {
+            /* Secondary button style */
+            background-color: #ffffff;
+            color: #5a4a3a;
+            border: 2px solid rgba(122, 93, 74, 0.2);
+            box-shadow: none;
+        }
+
+        #modal-skip-btn:hover {
+            background-color: #f7f1eb;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="auth-container">
+        <div class="auth-card">
+            <a href="index.html" class="auth-logo">GridPlay</a>
+
+            <h2 class="subtitle">Join the <strong>GridPlay</strong> community!</h2>
+            
+            <button class="google-btn" id="google-sign-in-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
+                Sign Up with Google
+            </button>
+            <div class="divider"><span>or</span></div>
+
+            <form id="register-form">
+                <div class="input-group">
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label for="reg-password">Password (min 6 characters)</label>
+                    <input type="password" id="reg-password" required autocomplete="new-password">
+                </div>
+                <div class="input-group">
+                    <label for="reg-confirm-password">Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" required autocomplete="new-password">
+                </div>
+                <div class="input-group">
+                    <label for="reg-referral">Referral Code (Optional)</label>
+                    <input type="text" id="reg-referral" autocomplete="off">
+                </div>
+
+                <div id="error-message-container" class="message-container"></div>
+
+                <button type="submit" id="register-btn" class="auth-btn">Register</button>
+            </form>
+
+            <p class="login-link">
+                Already have an account? <a href="login.html">Log In</a>
+            </p>
+
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </footer>
+
+
+    <div id="referral-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title"></h3>
+            <p id="modal-content"></p>
+
+            <div id="modal-referral-input-container">
+                <input type="text" id="modal-referral-input" placeholder="Enter Code Here">
+            </div>
+
+            <div class="modal-actions">
+                <button id="modal-apply-btn"></button>
+                <button id="modal-skip-btn"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // --- 1. FIREBASE IMPORTS ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            update,
+            query,
+            orderByChild,
+            equalTo
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // --- 2. FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // --- CUSTOM MESSAGE UTILITIES ---
+        const messageContainer = document.getElementById('error-message-container');
+        const displayMessage = (message, type) => {
+            messageContainer.textContent = message;
+            messageContainer.className = `message-container ${type}-message`;
+            if (type === 'error') {
+                setTimeout(() => {
+                    messageContainer.textContent = '';
+                    messageContainer.className = 'message-container';
+                }, 5000);
+            }
+        };
+        const clearMessages = () => {
+            messageContainer.textContent = '';
+            messageContainer.className = 'message-container';
+        };
+
+        // --- UTILITIES ---
+
+        const getFormattedDate = () => {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            return `${day}.${month}.${year}`;
+        };
+
+        const getReferralCodeFromUrl = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            return refCode ? refCode.toUpperCase().trim() : '';
+        };
+
+        /**
+         * Generates a unique referral code.
+         */
+        const generateUniqueReferralCode = async (username, database) => {
+            const MAX_ATTEMPTS = 5;
+            const playerStatsRef = ref(database, 'playerStats');
+            let attempt = 0;
+
+            while (attempt < MAX_ATTEMPTS) {
+                const randomNum = Math.floor(Math.random() * 900000) + 100000;
+                const prefix = username.substring(0, 4).toUpperCase();
+                const code = `${prefix}${randomNum}`;
+
+                const codeQuery = query(playerStatsRef, orderByChild('referralCode'), equalTo(code));
+                const snapshot = await get(codeQuery);
+
+                if (!snapshot.exists()) {
+                    return code;
+                }
+
+                console.warn(`[REFERRAL] Generated code ${code} found. Retrying...`);
+                attempt++;
+            }
+
+            console.error("Could not generate a unique code after 5 attempts.");
+            return username.substring(0, 2).toUpperCase() + Math.random().toString(36).substring(2, 8).toUpperCase();
+        };
+
+
+        // --- 4. REFERRAL BONUS GRANTING FUNCTION (175 XP for Inviter) ---
+        const grantReferralBonus = async (inviterCode) => {
+            const playerStatsRef = ref(database, 'playerStats');
+            const BONUS_XP = 175; // 175 XP for Inviter
+
+            try {
+                const inviterQuery = query(playerStatsRef,
+                    orderByChild('referralCode'),
+                    equalTo(inviterCode)
+                );
+                const snapshot = await get(inviterQuery);
+
+                if (snapshot.exists()) {
+                    let inviterUid;
+                    let inviterData;
+
+                    snapshot.forEach((childSnapshot) => {
+                        inviterUid = childSnapshot.key;
+                        inviterData = childSnapshot.val();
+                    });
+
+                    if (inviterUid) {
+                        let currentXp = inviterData.currentXp || 0;
+                        let level = inviterData.level || 1;
+                        let nextLevelXp = inviterData.nextLevelXp || 500;
+
+                        currentXp += BONUS_XP;
+                        let updates = {};
+
+                        if (currentXp >= nextLevelXp) {
+                            const remainingXp = currentXp - nextLevelXp;
+                            level += 1;
+                            nextLevelXp *= 2; // Simple level up logic (required XP doubles)
+
+                            console.log(`[LEVEL UP!] Player ${inviterData.username} reached Level ${level}!`);
+
+                            updates['/playerStats/' + inviterUid + '/level'] = level;
+                            updates['/playerStats/' + inviterUid + '/currentXp'] = remainingXp;
+                            updates['/playerStats/' + inviterUid + '/nextLevelXp'] = nextLevelXp;
+
+                        } else {
+                            updates['/playerStats/' + inviterUid + '/currentXp'] = currentXp;
+                        }
+
+                        await update(ref(database), updates);
+                        console.log(`[REFERRAL SUCCESS] Bonus XP granted to Inviter (${BONUS_XP} XP). Level: ${level}, XP: ${currentXp}.`);
+                    }
+
+                } else {
+                    console.warn(`[REFERRAL FAILED] Referral code ${inviterCode} not found in database.`);
+                }
+
+            } catch (error) {
+                console.error("Error granting referral bonus/level up:", error);
+                throw error;
+            }
+        };
+
+
+        // --- NEW: EXISTING ACCOUNT DIALOG HANDLER (Redirects to LOGIN) ---
+        /**
+         * Shows a modal dialog informing the user they already have an account.
+         */
+        const showExistingAccountDialog = () => {
+            const modal = document.getElementById('referral-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('modal-content');
+            const referralInputContainer = document.getElementById('modal-referral-input-container');
+            const applyBtn = document.getElementById('modal-apply-btn');
+            const skipBtn = document.getElementById('modal-skip-btn');
+
+            // Customizing the modal for the existing account message (TRANSLATED)
+            if (title) title.textContent = "Existing Account Found";
+            if (content) content.textContent = "It looks like you already have an account registered with this email. Please log in.";
+
+            if (referralInputContainer) referralInputContainer.style.display = 'none';
+            if (applyBtn) {
+                applyBtn.textContent = "Go to Login"; // CORRECT ACTION: LOGIN (TRANSLATED)
+                applyBtn.style.backgroundColor = '#ff6b9d';
+                
+                if (skipBtn) skipBtn.style.display = 'none';
+
+                if (modal) {
+                    modal.style.display = 'block';
+
+                    const handleRedirect = () => {
+                        modal.style.display = 'none';
+                        // CORRECT REDIRECT: LOGIN
+                        window.location.href = 'login.html'; 
+                    };
+
+                    // Clone & Replace to remove old listeners
+                    const newApplyBtn = applyBtn.cloneNode(true);
+                    applyBtn.parentNode.replaceChild(newApplyBtn, applyBtn);
+                    newApplyBtn.addEventListener('click', handleRedirect, { once: true });
+                }
+
+            } else {
+                // Fallback if modal elements are missing
+                window.location.href = 'login.html';
+            }
+        };
+
+
+        // --- REFERRAL DIALOG HANDLER ---
+        /**
+         * Opens a modal dialog to ask for a referral code manually.
+         */
+        const showReferralDialog = (userId, username, email) => {
+            const modal = document.getElementById('referral-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('modal-content');
+            const referralInputContainer = document.getElementById('modal-referral-input-container');
+            const referralInput = document.getElementById('modal-referral-input');
+            const applyBtn = document.getElementById('modal-apply-btn');
+            const skipBtn = document.getElementById('modal-skip-btn');
+
+            // Reset modal to default referral state (TRANSLATED)
+            if (title) title.textContent = "Got a Referral Code? 🎁";
+            if (content) content.textContent = "Enter your friend's code to get a bonus XP reward on registration!";
+            if (referralInputContainer) referralInputContainer.style.display = 'block';
+            if (applyBtn) {
+                applyBtn.textContent = "Apply Code";
+                applyBtn.style.backgroundColor = ''; 
+            }
+            if (skipBtn) skipBtn.textContent = "Skip";
+            if (skipBtn) skipBtn.style.display = 'block';
+
+            referralInput.value = '';
+            referralInput.placeholder = "Enter Code Here"; // Also update placeholder
+
+            if (!modal) {
+                console.error("Referral Modal HTML structure not found. Skipping to account page.");
+                saveInitialPlayerStats(userId, username, email, 'NONE', true);
+                return;
+            }
+
+            modal.style.display = 'block';
+
+            const handleAction = async (action) => {
+                modal.style.display = 'none';
+
+                let finalInviterCode = 'NONE';
+
+                if (action === 'APPLY') {
+                    const inputCode = referralInput.value.trim().toUpperCase();
+                    finalInviterCode = inputCode || 'NONE';
+                }
+
+                console.log(`[REFERRAL DIALOG] Action: ${action}. Code used: ${finalInviterCode}`);
+                await saveInitialPlayerStats(userId, username, email, finalInviterCode, true);
+            };
+
+            // Clone & Replace to remove old listeners
+            const applyHandler = () => handleAction('APPLY');
+            const skipHandler = () => handleAction('SKIP');
+
+            const newApplyBtn = applyBtn.cloneNode(true);
+            applyBtn.parentNode.replaceChild(newApplyBtn, applyBtn);
+            const newSkipBtn = skipBtn.cloneNode(true);
+            skipBtn.parentNode.replaceChild(newSkipBtn, skipBtn);
+
+            // Attach event listeners (using once: true to auto-remove after one click)
+            newApplyBtn.addEventListener('click', applyHandler, { once: true });
+            newSkipBtn.addEventListener('click', skipHandler, { once: true });
+        };
+
+
+        // --- 3. SAVE INITIAL DATA TO RTDB (100 XP for Invitee) ---
+        /**
+         * @param {boolean} doRedirect - If true, redirects after saving data.
+         */
+        const saveInitialPlayerStats = async (userId, username, email, inviterCode, doRedirect = false) => {
+            const playerRef = ref(database, 'playerStats/' + userId);
+
+            const personalReferralCode = await generateUniqueReferralCode(username, database);
+
+            let initialXp = 0;
+
+            // APPLY 100 XP BONUS FOR THE NEW USER (INVITEE)
+            if (inviterCode && inviterCode !== 'NONE') {
+                initialXp = 100; // 100 XP for Invitee
+                console.log(`[BONUS] Invitee bonus of ${initialXp} XP granted.`);
+            }
+
+            const initialData = {
+                username: username,
+                email: email,
+                avatar: '1.jpg',
+                minutesPlayed: 0,
+                gamesCompleted: 0,
+                currentXp: initialXp,
+                nextLevelXp: 500,
+                level: 1,
+                isVerified: true,
+                referralCode: personalReferralCode,
+                invitedByCode: inviterCode || 'NONE',
+                creationdate: getFormattedDate()
+            };
+
+            try {
+                await set(playerRef, initialData);
+                console.log("SUCCESS: Initial player data saved to RTDB successfully.");
+
+                // If Invitee used a code, grant bonus to Inviter (175 XP)
+                if (inviterCode && inviterCode !== 'NONE') {
+                    await grantReferralBonus(inviterCode);
+                    console.log("[BONUS] Bonus granted to Inviter (175 XP).");
+                }
+
+                // REDIRECT AND SESSION SET
+                if (doRedirect) {
+                    // Set session flag in local storage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'account.html';
+                }
+
+            } catch (error) {
+                console.error("FATAL ERROR: Failed writing initial data to RTDB:", error);
+                throw error;
+            }
+        };
+
+        // --- 5. GOOGLE SIGN-IN LOGIC (UPDATED) ---
+        const signInWithGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            clearMessages();
+
+            const inviterCodeFromUrl = getReferralCodeFromUrl();
+
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const username = user.displayName || user.email.split('@')[0];
+
+                const playerStatsRef = ref(database, 'playerStats/' + user.uid);
+                const snapshot = await get(playerStatsRef);
+
+                if (snapshot.exists()) {
+                    // Existing user AND RTDB data found: Redirect
+                    console.log("[GOOGLE SIGN-IN] Existing user. Direct redirect.");
+                    localStorage.setItem('isLoggedIn', 'true'); // Set session
+                    window.location.href = 'account.html';
+
+                } else {
+                    // New user: Save data or show referral dialog
+                    if (inviterCodeFromUrl) {
+                        console.log(`[GOOGLE SIGN-IN] New user (URL Referral: ${inviterCodeFromUrl}). Saving initial data.`);
+                        await saveInitialPlayerStats(user.uid, username, user.email, inviterCodeFromUrl, true);
+                    } else {
+                        console.log("[GOOGLE SIGN-IN] New user. Showing referral dialog.");
+                        showReferralDialog(user.uid, username, user.email);
+                    }
+                }
+            } catch (error) {
+                console.error("Google sign-in failed:", error);
+                let errorMessage = "Google sign-in failed. Please try again.";
+
+                // Check if account exists with a different credential (TRANSLATED)
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    console.log("[GOOGLE SIGN-IN] Account exists with different credential (e.g., Email/Password). Showing custom dialog.");
+                    showExistingAccountDialog();
+                    return; // CRITICAL STOP: Stop code execution after showing dialog
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage = "Sign-in popup closed. Please try again.";
+                } else if (error.message && error.message.includes("database")) {
+                    errorMessage = "RTDB Write Failed. Check Firebase Rules.";
+                }
+                displayMessage(errorMessage, 'error');
+            }
+        };
+
+        // --- 6. EMAIL/PASSWORD REGISTRATION LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('register-form');
+            const googleSignInBtn = document.getElementById('google-sign-in-btn');
+
+            const usernameInput = document.getElementById('reg-username');
+            const emailInput = document.getElementById('reg-email');
+            const passwordInput = document.getElementById('reg-password');
+            const confirmPasswordInput = document.getElementById('reg-confirm-password');
+            const referralInput = document.getElementById('reg-referral');
+
+            // Set referral field from URL on page load
+            const inviterCodeFromUrl = getReferralCodeFromUrl();
+            if (inviterCodeFromUrl) {
+                referralInput.value = inviterCodeFromUrl;
+            }
+
+            googleSignInBtn.addEventListener('click', signInWithGoogle);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearMessages();
+
+                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                const inviterCode = referralInput.value.trim().toUpperCase();
+
+                // Local Validations (TRANSLATED)
+                if (password !== confirmPassword) {
+                    displayMessage("Passwords do not match!", 'error');
+                    return;
+                }
+                if (password.length < 6) {
+                    displayMessage("Password must be at least 6 characters long.", 'error');
+                    return;
+                }
+
+                // Register with Firebase Authentication
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    // Save data and redirect (doRedirect = true)
+                    await saveInitialPlayerStats(user.uid, username, email, inviterCode, true);
+
+                } catch (error) {
+                    console.error("Registration failed:", error);
+                    let errorMessage = "Registration failed. Please try again.";
+
+                    // Error handling (TRANSLATED)
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage = "This email address is already in use.";
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = "The email address is invalid.";
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = "Password must be at least 6 characters long.";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    displayMessage(errorMessage, 'error');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

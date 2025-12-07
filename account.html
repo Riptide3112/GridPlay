@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account | GridPlay</title>
+    <meta name="description" content="Manage your GridPlay account, view stats, and change your avatar.">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- REFERRAL SECTION STYLES (PĂSTRATE) --- */
+        .referral-section {
+            padding: 2rem 0;
+            margin-bottom: 1rem;
+            border-top: 1px dashed #e8d4c0;
+            border-bottom: 1px dashed #e8d4c0;
+            text-align: center;
+        }
+
+        .referral-section h3 {
+            color: #7a5d4a;
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .referral-section p {
+            color: #9a8171;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .referral-input-group {
+            display: flex;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .referral-input-group input {
+            flex-grow: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background-color: #fdf5ec;
+            color: #5a4a3a;
+            font-size: 1rem;
+            outline: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .copy-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #ff8a66 0%, #ff5b8d 100%);
+            transform: scale(1.02);
+        }
+
+        .copy-btn .icon {
+            font-size: 1.2rem;
+        }
+
+        /* --- STILURI GENERALE DE CONT (PĂSTRATE) --- */
+        .account-main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 4rem 2rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        .stats-card {
+            /* Mărim lățimea maximă pentru a permite grilei să se extindă */
+            max-width: 750px;
+            /* Era 650px. Mărit la 750px */
+            width: 100%;
+            /* ... alte stiluri ... */
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* Mărim spațiul dintre rânduri și coloane */
+            gap: 2rem 3rem;
+            /* Era 1.5rem 2.5rem. Mărit la 2rem 3rem */
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Avatar și Nume */
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #e8d4c0;
+        }
+
+        #current-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid #d4b5a0;
+            box-shadow: 0 0 0 10px rgba(255, 107, 157, 0.15);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        #current-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 12px rgba(255, 107, 157, 0.25);
+        }
+
+        #name-and-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        #player-name {
+            font-size: 2.2rem;
+            color: #7a5d4a;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- STILURI NOI PENTRU INSIGNA (BADGE) --- */
+        .verification-badge {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .verification-badge.verified {
+            background-color: #e5f6e5;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .verification-badge.unverified {
+            background-color: #fce7e7;
+            color: #D32F2F;
+            border: 1px solid #D32F2F;
+        }
+
+        /* --- SFÂRȘIT STILURI INSIGNA --- */
+
+        /* Statistici (PĂSTRATE) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem 2.5rem;
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-item {
+            background: #fdf5ec;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            border-left: 5px solid #ff9a76;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            font-weight: 500;
+            color: #9a8171;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5a4a3a;
+            line-height: 1.2;
+
+            /* MODIFICARE NOUĂ: Permite textului lung (fără spații) să se rupă
+            numai dacă depășește lățimea, prevenind ruperea neplăcută. */
+            overflow-wrap: break-word;
+            word-break: break-all;
+            /* Forțează ruperea în interiorul cuvântului */
+        }
+
+        /* Ajustare opțională a câmpului pentru a-i da mai mult loc */
+        .stat-item {
+            /* Mărim padding-ul lateral pentru o vizualizare mai aerisită */
+            padding: 1.2rem 1.7rem;
+            /* Era 1rem 1.5rem. Mărit la 1.2rem 1.7rem */
+            border-radius: 15px;
+            border-left: 5px solid #ff9a76;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Bara de Progres și Buton Logout (PĂSTRATE) */
+
+        .progress-section {
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .progress-section h3 {
+            color: #7a5d4a;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .progress-bar-container {
+            background: #e8d4c0;
+            border-radius: 15px;
+            height: 30px;
+            overflow: hidden;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a76 0%, #ff6b9d 100%);
+            transition: width 2s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: skewX(-20deg);
+        }
+
+        .progress-label {
+            text-align: right;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: #9a8171;
+        }
+
+        .logout-btn {
+            margin-top: 3rem;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #c9a88f 0%, #a88a75 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 143, 0.4);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 143, 0.6);
+        }
+
+        /* --- STILURI DIALOG MODAL (POP-UP) PĂSTRATE --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeInModal 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #fffcf6 0%, #f7f1eb 100%);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 85%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            animation: slideInTop 0.4s ease-out;
+        }
+
+        .modal-content h3 {
+            color: #7a5d4a;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+        }
+
+        .close-btn {
+            color: #c9a88f;
+            float: right;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #ff6b9d;
+            text-decoration: none;
+        }
+
+        .avatar-selector-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar-option {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border: 3px solid transparent;
+        }
+
+        .avatar-option:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            border: 3px solid #d4b5a0;
+        }
+
+        .avatar-option.selected {
+            opacity: 1;
+            border: 3px solid #ff6b9d;
+            box-shadow: 0 0 15px rgba(255, 107, 157, 0.8);
+        }
+
+        /* Media Query pentru Mobil */
+        @media (max-width: 600px) {
+            .stats-card {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #player-name {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Animații modal */
+        @keyframes fadeInModal {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes slideInTop {
+            from {
+                transform: translateY(-50px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        /* --- STILURI NOI PENTRU LOGOUT LOADING WINDOW (Fereastră Mică) --- */
+        .logout-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Fundal semi-transparent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .logout-loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-window {
+            background: linear-gradient(145deg, #fffcf6 0%, #f7f1eb 100%);
+            padding: 40px 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 350px;
+            transform: scale(0.8);
+            transition: transform 0.4s ease-out;
+        }
+
+        .logout-loading-overlay.active .loading-window {
+            transform: scale(1);
+        }
+
+        .loading-circle {
+            border: 8px solid #e8d4c0;
+            border-top: 8px solid #ff6b9d;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #goodbye-message {
+            font-size: 1.8rem;
+            /* Mărit puțin pentru vizibilitate */
+            font-weight: 700;
+            color: #7a5d4a;
+            min-height: 40px;
+        }
+
+        /* Animație subtilă pentru text */
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            20%,
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .goodbye-text-animated {
+            animation: fadeInOut 4s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="logout-loading-overlay" class="logout-loading-overlay">
+        <div class="loading-window">
+            <div class="loading-circle"></div>
+            <div id="goodbye-message">
+                <span id="goodbye-text" class="goodbye-text-animated">Auf Wiedersehen!</span>
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">GridPlay</a>
+        </div>
+    </header>
+
+    <main class="account-main">
+        <section class="account-container">
+            <div id="loader" style="display: none; color: #7a5d4a; font-size: 1.2rem;">Loading Player Data...</div>
+
+            <div id="player-stats-card" class="stats-card" style="display: none;">
+
+                <div class="profile-header">
+                    <img id="current-avatar" src="/Avatars/1.jpg" alt="Player Avatar">
+                    <div id="name-and-badge">
+                        <h2 id="player-name">...</h2>
+                        <span id="verification-badge" class="verification-badge">...</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="stat-item">
+                        <span class="stat-label">Account Creation Date:</span>
+                        <span id="account-creation-date" class="stat-value">...</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Total Minutes Played:</span>
+                        <span id="minutes-played" class="stat-value">...</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Account Email:</span>
+                        <span id="player-email" class="stat-value">...</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Games Completed:</span>
+                        <span id="games-completed" class="stat-value">...</span>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h3 id="xp-level-title">XP Progress to Next Level</h3>
+                    <div class="progress-bar-container">
+                        <div id="xp-progress-bar" class="progress-bar" style="width: 0%;"></div>
+                    </div>
+                    <p class="progress-label"><span id="current-xp">0</span> / <span id="next-level-xp">0</span> XP</p>
+                </div>
+
+                <div class="referral-section">
+                    <h3>Invite Friends & Earn Rewards</h3>
+                    <p>Share your unique link to invite friends to GridPlay. Both of you can earn bonuses!</p>
+                    <div class="referral-input-group">
+                        <input type="text" id="referral-link" value="..." readonly>
+                        <button id="copy-referral-btn" class="copy-btn">
+                            <span class="icon">📋</span> Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <button id="logout-btn" class="logout-btn">Log Out</button>
+
+            </div>
+        </section>
+    </main>
+
+    <div id="avatar-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Select New Avatar</h3>
+            <div id="avatar-selector" class="avatar-selector-grid">
+                <img class="avatar-option selected" src="Avatars/1.jpg" data-avatar="1.jpg" alt="Avatar 1">
+                <img class="avatar-option" src="/Avatars/2.jpg" data-avatar="2.jpg" alt="Avatar 2">
+                <img class="avatar-option" src="/Avatars/3.jpg" data-avatar="3.jpg" alt="Avatar 3">
+                <img class="avatar-option" src="/Avatars/4.jpg" data-avatar="4.jpg" alt="Avatar 4">
+                <img class="avatar-option" src="/Avatars/5.jpg" data-avatar="5.jpg" alt="Avatar 5">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script type="module">
+    // --- 1. IMPORTURI FIREBASE ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import {
+        getAuth,
+        signOut,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+    // --- 2. CONFIGURAȚIE FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+        authDomain: "gridplay-5689a.firebaseapp.com",
+        databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "gridplay-5689a",
+        storageBucket: "gridplay-5689a.firebasestorage.app",
+        messagingSenderId: "822079861846",
+        appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+    };
+
+    // Inițializează Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // --- 3. VARIABILE DOM ȘI CONSTANTE (ACTUALIZATE) ---
+    const AVATARS_BASE_PATH = "Avatars/";
+    const avatarModal = document.getElementById('avatar-modal');
+    const currentAvatarImg = document.getElementById('current-avatar');
+    const closeBtn = document.querySelector('.close-btn');
+    const avatarSelectorGrid = document.getElementById('avatar-selector');
+    const referralLinkInput = document.getElementById('referral-link');
+    const copyReferralBtn = document.getElementById('copy-referral-btn');
+    const playerStatsCard = document.getElementById('player-stats-card');
+    const loader = document.getElementById('loader');
+    const verificationBadge = document.getElementById('verification-badge');
+
+    // Variabile pentru Logout Animation
+    const logoutLoadingOverlay = document.getElementById('logout-loading-overlay');
+    const goodbyeText = document.getElementById('goodbye-text');
+
+    // Mesajele de rămas-bun (Engleză, Franceză, Germană, Spaniolă)
+    const goodbyeMessages = [
+        'See you later!',       // Engleză
+        'Au Revoir!',     // Franceză
+        'Auf Wiedersehen!', // Germană
+        '¡Hasta luego!'   // Spaniolă
+    ];
+    let messageIndex = 0;
+
+    // Variabila globală pentru a stoca listenerul RTDB și a-l opri la logout
+    let playerStatsListener = null;
+
+    // --- FUNCTII PENTRU SISTEMUL DE NIVELURI ---
+    function calculateXPForLevel(level) {
+        // Level 1: 0-500 XP (necesar pentru level 2)
+        // Level 2: 500-600 XP (necesar pentru level 3)
+        // Level 3: 600-700 XP (necesar pentru level 4)
+        // etc...
+        
+        if (level <= 1) {
+            return 500; // Pentru a trece de la nivelul 1 la 2
+        } else {
+            // Pentru fiecare nivel ulterior, crește cu 100 XP față de nivelul anterior
+            return 500 + (level - 1) * 100;
+        }
+    }
+
+    function calculateLevel(currentXp) {
+        let level = 1;
+        let xpNeededForNextLevel = calculateXPForLevel(level);
+        let xpAccumulated = currentXp;
+        
+        // Cat timp XP-ul curent este mai mare sau egal cu XP-ul necesar pentru nivelul urmator
+        while (xpAccumulated >= xpNeededForNextLevel) {
+            level++;
+            xpAccumulated -= xpNeededForNextLevel;
+            xpNeededForNextLevel = calculateXPForLevel(level);
+        }
+        
+        return {
+            level: level,
+            currentXp: xpAccumulated,
+            nextLevelXp: xpNeededForNextLevel
+        };
+    }
+
+    // --- FUNCTII MODAL și UTILAJE (PĂSTRATE) ---
+    const openAvatarModal = () => { avatarModal.style.display = 'block'; };
+    const closeAvatarModal = () => { avatarModal.style.display = 'none'; };
+
+    const copyLinkToClipboard = async () => {
+        const link = referralLinkInput.value;
+        try {
+            await navigator.clipboard.writeText(link);
+            copyReferralBtn.innerHTML = '<span class="icon">✅</span> Copied!';
+            copyReferralBtn.style.background = '#c9a88f';
+
+            setTimeout(() => {
+                copyReferralBtn.innerHTML = '<span class="icon">📋</span> Copy Link';
+                copyReferralBtn.style.background = 'linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%)';
+            }, 2000);
+
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
+
+    // Funcția pentru Animația de Text la Logout
+    const startGoodbyeAnimation = () => {
+        // Schimbă textul la fiecare 1000ms (1 secundă)
+        const intervalId = setInterval(() => {
+            goodbyeText.textContent = goodbyeMessages[messageIndex];
+            messageIndex = (messageIndex + 1) % goodbyeMessages.length;
+        }, 1000); // Rotația mesajului se face la fiecare 1s
+
+        // Funcția returnată poate fi folosită pentru a opri animația
+        return () => clearInterval(intervalId);
+    };
+
+    // --- LOGICA SCHIMBĂRII AVATARULUI (RTDB) ---
+    const setupAvatarSelector = (playerId) => {
+        document.querySelectorAll('.avatar-option').forEach(img => {
+            // Eliminăm ascultătorii anteriori pentru a preveni duplicarea
+            const newImg = img.cloneNode(true);
+            img.parentNode.replaceChild(newImg, img);
+
+            newImg.addEventListener('click', async (e) => {
+                const newAvatarName = e.target.getAttribute('data-avatar');
+
+                // 1. Schimbă selecția vizuală în modal
+                document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+                e.target.classList.add('selected');
+
+                // 2. Salvează în Firebase Realtime Database
+                try {
+                    await update(ref(database, 'playerStats/' + playerId), {
+                        avatar: newAvatarName // Salvează valoarea '1.jpg', '2.jpg', etc.
+                    });
+                    console.log(`Avatar updated and saved to RTDB: ${newAvatarName}`);
+                } catch (error) {
+                    console.error("Error saving new avatar (check RTDB Rules):", error);
+                    alert("Eroare la salvarea avatarului. Verifică permisiunile RTDB.");
+                }
+
+                // 3. Actualizează avatarul principal
+                currentAvatarImg.src = AVATARS_BASE_PATH + newAvatarName;
+                closeAvatarModal();
+            });
+        });
+    };
+
+    // --- LOGICA DE ÎNCĂRCARE A DATELOR (RTDB) ---
+    const loadPlayerStats = (playerId, isEmailVerified) => {
+        loader.style.display = 'block';
+        playerStatsCard.style.display = 'none';
+
+        const playerRef = ref(database, 'playerStats/' + playerId);
+
+        // Setează Insigna de Verificare imediat
+        if (isEmailVerified) {
+            verificationBadge.textContent = 'Verified ✅';
+            verificationBadge.className = 'verification-badge verified';
+        } else {
+            verificationBadge.textContent = 'Unverified ⚠️';
+            verificationBadge.className = 'verification-badge unverified';
+        }
+
+        // Înlocuiește vechiul listener cu cel nou și salvează funcția de oprire (unsubscribe)
+        playerStatsListener = onValue(playerRef, (snapshot) => {
+            const data = snapshot.val();
+
+            if (data) {
+                const username = data.username || 'N/A';
+                const currentXp = data.currentXp || 0;
+                const avatarFile = data.avatar || '1.jpg';
+                const referralCode = data.referralCode || 'NONE';
+                
+                // CALCULEAZĂ NIVELUL PE BAZA XP-ULUI CURENT
+                const levelData = calculateLevel(currentXp);
+                const currentLevel = levelData.level;
+                const xpInCurrentLevel = levelData.currentXp;
+                const nextLevelXp = levelData.nextLevelXp;
+
+                // 1. Actualizează Avatarul Principal
+                currentAvatarImg.src = AVATARS_BASE_PATH + avatarFile;
+
+                // 2. Selectează vizual avatarul în Modal
+                document.querySelectorAll('.avatar-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.getAttribute('data-avatar') === avatarFile) {
+                        opt.classList.add('selected');
+                    }
+                });
+
+                // 3. Link de Referral
+                referralLinkInput.value = `https://www.gridplay.ro/?ref=${referralCode}`;
+
+                // 4. Actualizează Progresul XP (bazat pe XP-ul din nivelul curent)
+                const xpPercent = (xpInCurrentLevel / nextLevelXp) * 100;
+                const displayPercent = Math.min(100, xpPercent);
+                document.getElementById('xp-progress-bar').style.width = `${displayPercent}%`;
+                document.getElementById('current-xp').textContent = xpInCurrentLevel.toLocaleString();
+                document.getElementById('next-level-xp').textContent = nextLevelXp.toLocaleString();
+                document.getElementById('xp-level-title').textContent = `XP Progress to Next Level (Lvl ${currentLevel})`;
+
+                // 5. Actualizează celelalte date
+                document.getElementById('player-name').textContent = username;
+                document.getElementById('account-creation-date').textContent = data.creationdate || 'N/A';
+                document.getElementById('minutes-played').textContent = `${data.minutesPlayed || 0} min`;
+                document.getElementById('games-completed').textContent = (data.gamesCompleted || 0).toLocaleString();
+                document.getElementById('player-email').textContent = data.email || auth.currentUser.email || 'N/A';
+
+                // 6. ACTUALIZEAZĂ NIVELUL ÎN BAZA DE DATE (dacă a fost schimbat)
+                if (data.level !== currentLevel) {
+                    update(ref(database, 'playerStats/' + playerId), {
+                        level: currentLevel,
+                        nextLevelXp: nextLevelXp
+                    }).then(() => {
+                        console.log(`Level updated to ${currentLevel} in database`);
+                    }).catch(error => {
+                        console.error("Error updating level in database:", error);
+                    });
+                }
+
+                // Afișează conținutul
+                loader.style.display = 'none';
+                playerStatsCard.style.display = 'block';
+
+            } else {
+                console.warn("No player data found for ID:", playerId);
+                loader.style.display = 'none';
+                alert("A apărut o eroare la încărcarea datelor. Asigurați-vă că sunteți autentificat și că există date în Realtime Database pentru acest UID.");
+            }
+        }, (error) => {
+            console.error("Firebase Read Error:", error);
+            loader.style.display = 'none';
+            alert("Eroare de conexiune la baza de date. Verificați regulile de securitate.");
+        });
+    };
+
+    // --- FUNCȚIE PENTRU ADAUGAREA XP (FOLOSEȘTE ACEASTA ÎN JOCURI) ---
+    window.addXP = function(playerId, xpToAdd) {
+        const playerRef = ref(database, 'playerStats/' + playerId);
+        
+        onValue(playerRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const currentXp = data.currentXp || 0;
+                const newTotalXp = currentXp + xpToAdd;
+                
+                // Actualizează doar XP-ul total
+                update(playerRef, {
+                    currentXp: newTotalXp
+                }).then(() => {
+                    console.log(`Added ${xpToAdd} XP to player ${playerId}. Total XP: ${newTotalXp}`);
+                    
+                    // Verifică dacă jucătorul a trecut la un nou nivel
+                    const oldLevelData = calculateLevel(currentXp);
+                    const newLevelData = calculateLevel(newTotalXp);
+                    
+                    if (newLevelData.level > oldLevelData.level) {
+                        console.log(`🎉 Player leveled up! From level ${oldLevelData.level} to ${newLevelData.level}`);
+                        // Aici poți adăuga efecte vizuale sau notificări pentru level up
+                    }
+                }).catch(error => {
+                    console.error("Error adding XP:", error);
+                });
+            }
+        }, { onlyOnce: true });
+    };
+
+    // --- LOGICA LA ÎNCĂRCAREA PAGINII (EVENT LISTENERS) ---
+
+    // --- VERIFICARE SESIUNE FĂRĂ ALERTĂ ---
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn !== 'true') {
+        // Redirecționează fără alertă
+        window.location.href = 'login.html';
+    }
+    // --- SFÂRȘIT VERIFICARE SESIUNE ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // 1. Verifică starea de autentificare (Logica Principală)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Sesiune validă. Setează flag-ul pentru refresh-uri ulterioare.
+                localStorage.setItem('isLoggedIn', 'true');
+
+                const CURRENT_PLAYER_ID = user.uid;
+
+                // Încarcă datele din RTDB
+                loadPlayerStats(CURRENT_PLAYER_ID, user.emailVerified);
+
+                // Setează selectorul de avatar
+                setupAvatarSelector(CURRENT_PLAYER_ID);
+            } else {
+                // Dacă onAuthStateChanged detectează deconectarea
+                if (localStorage.getItem('isLoggedIn') === 'true') {
+                    localStorage.removeItem('isLoggedIn');
+                    if (playerStatsListener) {
+                        playerStatsListener();
+                    }
+                } else {
+                    loader.style.display = 'none';
+                }
+            }
+        });
+
+        // 2. Event Listeners Modal
+        currentAvatarImg.addEventListener('click', openAvatarModal);
+        closeBtn.addEventListener('click', closeAvatarModal);
+        window.addEventListener('click', (event) => {
+            if (event.target == avatarModal) {
+                closeAvatarModal();
+            }
+        });
+
+        // 3. Event Listener Copiere Link
+        copyReferralBtn.addEventListener('click', copyLinkToClipboard);
+
+        // 4. Event Listener Log Out (ACTUALIZAT cu animație custom)
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = 'Deconectare...';
+
+            // 1. Oprim listener-ul RTDB
+            if (playerStatsListener) {
+                playerStatsListener();
+            }
+
+            // 2. Afișăm overlay-ul animat
+            logoutLoadingOverlay.classList.add('active');
+            const stopAnimation = startGoodbyeAnimation();
+
+            try {
+                // 3. Executăm deconectarea Firebase
+                await signOut(auth);
+
+                // 4. Șterge EXPLICIT FLAG-UL DE SESIUNE
+                localStorage.removeItem('isLoggedIn');
+
+                // Așteptăm 3 secunde pentru ca animația să ruleze
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                // 5. Oprim animația și redirecționăm către index.html
+                stopAnimation();
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error("Logout failed:", error);
+
+                // În caz de eroare, curățăm și revenim la starea inițială
+                stopAnimation();
+                logoutLoadingOverlay.classList.remove('active');
+                logoutBtn.disabled = false;
+                logoutBtn.textContent = 'Log Out';
+                alert("Deconectarea a eșuat. Vă rugăm încercați din nou.");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

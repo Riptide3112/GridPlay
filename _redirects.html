@@ -1,0 +1,19 @@
+# --- GridPlay Netlify Redirects ---
+
+# 1. Permanent Redirects (301) for SEO/Legacy URLs
+# These ensure old or common URLs are permanently moved to the correct file names.
+/privacy-policy /privacy.html 301
+/terms-of-service /terms.html 301
+/contact-us /contact.html 301
+
+# 2. Clean URL Rewrites (200)
+# This allows users to access game pages without needing the .html extension in the address bar (e.g., gridplay.com/tictactoe)
+# IMPORTANT: Adjust the destination path if your game HTML files are in subfolders.
+/tictactoe /tictactoe.html 200
+/sudoku /sudoku.html 200
+/snake /snake.html 200
+/numberpuzzle /numberpuzzle.html 200
+
+# 3. Custom 404 Error Page
+# This is crucial for Netlify: it directs any path that doesn't exist to your custom 404.html page.
+/* /404.html 404

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridPlay - Fun Games for Everyone</title>
+    <meta name="description" content="Play amazing free online games at GridPlay. Fun for kids and adults!">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">GridPlay</a>
+            <a href="/account.html" class="account-btn" id="account-link">
+                Account
+            </a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Welcome to GridPlay</h1>
+        <p>Discover endless fun with our collection of amazing games for everyone!</p>
+    </section>
+
+    <section class="games-container" id="games">
+        <h2 class="section-title">Featured Games</h2>
+        <div class="games-grid">
+            <div class="game-card" data-game="Games/MemoryMatch/memorymatch.html">
+                <div class="game-icon">🧠</div>
+                <h3>Memory Match</h3>
+                <p>Test your memory skills by matching pairs of cards. Fun for all ages!</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="Games/TicTacToe/tictactoe.html">
+                <div class="game-icon">⭕</div>
+                <h3>Tic Tac Toe</h3>
+                <p>Classic strategy game. Play against a friend or challenge the computer!</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="Games/ColorMatch/colormatch.html">
+                <div class="game-icon">🎨</div>
+                <h3>Color Match</h3>
+                <p>Match the colors as fast as you can. How high can you score?</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="Games/NumberPuzzle/numberpuzzle.html">
+                <div class="game-icon">🔢</div>
+                <h3>Number Puzzle</h3>
+                <p>Slide the tiles to arrange numbers in order. Challenge your brain!</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="Games/Sudoku/sudoku.html">
+                <div class="game-icon">🧩</div>
+                <h3>Sudoku</h3>
+                <p>Fill the grid with numbers 1-9. Logic puzzle for everyone!</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="Games/2048/2048.html">
+                <div class="game-icon">🎯</div>
+                <h3>2048</h3>
+                <p>Join the tiles to reach 2048! Addictive puzzle game with endless fun.</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+            <div class="game-card" data-game="/Games/Snake/snake.html">
+                <div class="game-icon">🐍</div>
+                <h3>Snake Game</h3>
+                <p>Guide the snake to eat and grow. Don't hit the walls or yourself!</p>
+                <button class="play-btn">Play Now</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const accountLink = document.getElementById('account-link');
+
+            if (accountLink) {
+                // Prevenim comportamentul implicit al link-ului
+                accountLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Verificăm starea de autentificare în localStorage
+                    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+                    if (isLoggedIn === 'true') {
+                        // Dacă utilizatorul este logat, îl trimitem la pagina contului
+                        window.location.href = '/account.html';
+                    } else {
+                        // Dacă NU este logat, îl trimitem la pagina de login
+                        window.location.href = '/login.html';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>

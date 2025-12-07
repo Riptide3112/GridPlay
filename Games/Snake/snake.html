@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game - GridPlay</title>
+    <link rel="stylesheet" href="snake.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="../../index.html" class="back-btn">← Back</a>
+            <a href="../../index.html" class="logo">GridPlay</a>
+            <a href="../../account.html" class="account-btn">Account</a>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title-section">
+                <div class="game-icon-large">🐍</div>
+                <div>
+                    <h1>Snake Game</h1>
+                    <p>Eat, grow, and earn XP!</p>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="score">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="highScore">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="speed">1</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="canvas-container">
+                <canvas id="gameCanvas"></canvas>
+                <div id="startOverlay" class="game-overlay">
+                    <div class="overlay-content">
+                        <div class="snake-icon">🐍</div>
+                        <h2>Ready to Play?</h2>
+                        <p>Use arrow keys, WASD, or touch controls</p>
+                        <button id="startBtn" class="primary-btn">Start Game</button>
+                    </div>
+                </div>
+                <div id="gameOverScreen" class="game-overlay hidden">
+                    <div class="overlay-content">
+                        <div class="game-over-icon">💀</div>
+                        <h2>Game Over!</h2>
+                        <p class="final-score">Score: <span id="finalScore">0</span></p>
+                        <button id="restartBtn" class="primary-btn">Play Again</button>
+                    </div>
+                </div>
+                <div id="pauseOverlay" class="game-overlay hidden">
+                    <div class="overlay-content">
+                        <h2>⏸ Paused</h2>
+                        <p>Tap to continue</p>
+                    </div>
+                </div>
+                <div id="levelUpOverlay" class="game-overlay hidden">
+                    <div class="overlay-content">
+                        <div class="level-up-icon">🚀</div>
+                        <h2>Level Up!</h2>
+                        <p class="level-text">You reached level <span id="levelNumber">2</span>!</p>
+                        <p class="speed-text">Snake speed increased!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Touch Controls for Mobile -->
+            <div class="touch-controls hidden" id="touchControls">
+                <div class="touch-row">
+                    <button class="touch-btn" id="upBtn">↑</button>
+                </div>
+                <div class="touch-row">
+                    <button class="touch-btn" id="leftBtn">←</button>
+                    <button class="touch-btn" id="downBtn">↓</button>
+                    <button class="touch-btn" id="rightBtn">→</button>
+                </div>
+                <div class="touch-row">
+                    <button class="touch-btn action-btn" id="pauseTouchBtn">⏸</button>
+                    <button class="touch-btn action-btn" id="restartTouchBtn">🔄</button>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button class="control-button" id="pauseBtn">
+                    <span class="btn-icon">⏸</span>
+                    <span class="btn-text">Pause</span>
+                </button>
+                <button class="control-button" id="newGameBtn">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">New Game</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="instructions-card">
+            <h3>🎮 Controls</h3>
+            <div class="control-grid">
+                <div class="control-item">
+                    <kbd>↑ ↓ ← →</kbd>
+                    <span>Arrow Keys</span>
+                </div>
+                <div class="control-item">
+                    <kbd>W A S D</kbd>
+                    <span>Alternative</span>
+                </div>
+                <div class="control-item">
+                    <kbd>Space</kbd>
+                    <span>Pause</span>
+                </div>
+                <div class="control-item">
+                    <kbd>Touch</kbd>
+                    <span>Mobile Controls</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="../../privacy.html">Privacy Policy</a>
+            <a href="../../terms.html">Terms of Service</a>
+            <a href="../../contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <!-- Firebase Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            get, 
+            update, 
+            push 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        window.currentUserId = null;
+        window.isUserLoggedIn = false;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUserId = user.uid;
+                window.isUserLoggedIn = true;
+                loadHighScore();
+            } else {
+                window.isUserLoggedIn = false;
+                window.currentUserId = null;
+                const localHighScore = localStorage.getItem('snakeHighScore') || 0;
+                document.getElementById('highScore').textContent = localHighScore;
+            }
+        });
+
+        async function loadHighScore() {
+            if (!window.currentUserId) return;
+            
+            try {
+                const snapshot = await get(ref(database, `gameSessions/${window.currentUserId}/snake/highScore`));
+                if (snapshot.exists()) {
+                    const highScore = snapshot.val();
+                    document.getElementById('highScore').textContent = highScore;
+                    localStorage.setItem('snakeHighScore', highScore);
+                }
+            } catch (error) {
+                console.error("Error loading high score:", error);
+            }
+        }
+
+        window.saveGameToFirebase = async function(score, xpEarned, gameDuration, level) {
+            if (!window.currentUserId || !window.isUserLoggedIn) {
+                return 0;
+            }
+
+            try {
+                const updates = {};
+                const playTimeMinutes = Math.max(1, Math.floor(gameDuration / 60));
+                
+                const playerRef = ref(database, `playerStats/${window.currentUserId}`);
+                const playerSnapshot = await get(playerRef);
+                
+                if (!playerSnapshot.exists()) return 0;
+                
+                const playerData = playerSnapshot.val();
+                
+                const currentHighScore = await get(ref(database, `gameSessions/${window.currentUserId}/snake/highScore`));
+                const highScoreValue = currentHighScore.exists() ? currentHighScore.val() : 0;
+                
+                if (score > highScoreValue) {
+                    updates[`gameSessions/${window.currentUserId}/snake/highScore`] = score;
+                }
+                
+                const currentMinutes = playerData.minutesPlayed || 0;
+                updates[`playerStats/${window.currentUserId}/minutesPlayed`] = currentMinutes + playTimeMinutes;
+                
+                updates[`playerStats/${window.currentUserId}/gamesCompleted`] = (playerData.gamesCompleted || 0) + 1;
+                
+                const currentXp = playerData.currentXp || 0;
+                updates[`playerStats/${window.currentUserId}/currentXp`] = currentXp + xpEarned;
+                
+                const sessionData = {
+                    score: score,
+                    level: level,
+                    duration: playTimeMinutes,
+                    xpEarned: xpEarned,
+                    timestamp: new Date().toISOString()
+                };
+                
+                await push(ref(database, `gameSessions/${window.currentUserId}/snake/sessions`), sessionData);
+                
+                await update(ref(database), updates);
+                
+                return xpEarned;
+                
+            } catch (error) {
+                console.error("Error saving game:", error);
+                return 0;
+            }
+        };
+    </script>
+
+    <script src="snake.js"></script>
+</body>
+</html>

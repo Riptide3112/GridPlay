@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - GridPlay</title>
+    <link rel="stylesheet" href="tictactoe.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="../../index.html" class="back-btn">← Back</a>
+            <a href="../../index.html" class="logo">GridPlay</a>
+            <a href="../../account.html" class="account-btn">
+                <span class="account-icon">👤</span>
+                Account
+            </a>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title-section">
+                <div class="game-icon-large">⭕</div>
+                <div>
+                    <h1>Tic Tac Toe</h1>
+                    <p>Three in a row wins!</p>
+                </div>
+            </div>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="bot">
+                    <span class="mode-icon">🤖</span>
+                    <span>vs Bot</span>
+                </button>
+                <button class="mode-btn" data-mode="player">
+                    <span class="mode-icon">👥</span>
+                    <span>1v1</span>
+                </button>
+            </div>
+
+            <div class="difficulty-selector" id="difficultySelector">
+                <label>Bot Difficulty:</label>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" data-difficulty="easy">Easy</button>
+                    <button class="diff-btn active" data-difficulty="medium">Medium</button>
+                    <button class="diff-btn" data-difficulty="hard">Hard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="scoreboard">
+                <div class="score-card player-x">
+                    <div class="score-icon">❌</div>
+                    <div class="score-info">
+                        <span class="score-label" id="playerXLabel">Player X</span>
+                        <span class="score-value" id="scoreX">0</span>
+                    </div>
+                </div>
+                <div class="score-card draws">
+                    <div class="score-icon">🤝</div>
+                    <div class="score-info">
+                        <span class="score-label">Draws</span>
+                        <span class="score-value" id="scoreDraws">0</span>
+                    </div>
+                </div>
+                <div class="score-card player-o">
+                    <div class="score-icon">⭕</div>
+                    <div class="score-info">
+                        <span class="score-label" id="playerOLabel">Player O</span>
+                        <span class="score-value" id="scoreO">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-status" id="gameStatus">
+                <span class="current-turn">❌</span>
+                <span class="status-text">Player X's Turn</span>
+            </div>
+
+            <div class="board-container">
+                <div class="board" id="board">
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                </div>
+                <svg class="win-line" id="winLine" viewBox="0 0 300 300">
+                    <line x1="0" y1="0" x2="0" y2="0" stroke="#ff6b9d" stroke-width="8" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="game-controls">
+                <button class="control-button" id="resetBtn">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">New Round</span>
+                </button>
+                <button class="control-button" id="resetScoreBtn">
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">Reset Score</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="winOverlay" class="game-overlay hidden">
+            <div class="overlay-content">
+                <div class="win-icon" id="winIcon">🎉</div>
+                <h2 id="winTitle">Player X Wins!</h2>
+                <p class="win-message" id="winMessage">Congratulations!</p>
+                <button id="playAgainBtn" class="primary-btn">Play Again</button>
+            </div>
+        </div>
+
+        <div id="confirmOverlay" class="game-overlay hidden">
+            <div class="overlay-content confirm-dialog">
+                <div class="confirm-icon">⚠️</div>
+                <h2>Reset Scores?</h2>
+                <p class="confirm-message">Are you sure you want to reset all scores? This action cannot be undone.</p>
+                <div class="confirm-buttons">
+                    <button id="confirmYes" class="primary-btn">Yes, Reset</button>
+                    <button id="confirmNo" class="secondary-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions-card">
+            <h3>🎮 How to Play</h3>
+            <div class="instructions-list">
+                <p>• Choose between playing vs Bot or 1v1 with a friend</p>
+                <p>• Select bot difficulty: Easy, Medium, or Hard</p>
+                <p>• Click on any empty cell to place your mark</p>
+                <p>• Get three in a row (horizontal, vertical, or diagonal) to win</p>
+                <p>• Scores are saved automatically</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="../../privacy.html">Privacy Policy</a>
+            <a href="../../terms.html">Terms of Service</a>
+            <a href="../../contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="tictactoe.js"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Match - GridPlay</title>
+    <link rel="stylesheet" href="colormatch.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="../../index.html" class="back-btn">← Back</a>
+            <a href="../../index.html" class="logo">GridPlay</a>
+            <a href="../../account.html" class="account-btn">Account</a>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title-section">
+                <div class="game-icon-large">🎨</div>
+                <div>
+                    <h1>Color Match</h1>
+                    <p>Match colors to the right containers!</p>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="score">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="highScore">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="timer">60</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="canvas-container">
+                <div id="gameBoard"></div>
+                <div id="startOverlay" class="game-overlay">
+                    <div class="overlay-content">
+                        <h2>Ready to Play?</h2>
+                        <p>Drag colors to matching containers</p>
+                        <button id="startBtn" class="primary-btn">Start Game</button>
+                    </div>
+                </div>
+                <div id="gameOverScreen" class="game-overlay hidden">
+                    <div class="overlay-content">
+                        <div class="game-over-icon">🎯</div>
+                        <h2>Game Over!</h2>
+                        <p class="final-score">Score: <span id="finalScore">0</span></p>
+                        <button id="restartBtn" class="primary-btn">Play Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colors-row">
+                <div class="color-ball" data-color="red" style="background-color: #ff6b6b;"></div>
+                <div class="color-ball" data-color="blue" style="background-color: #4d96ff;"></div>
+                <div class="color-ball" data-color="green" style="background-color: #6bcf7f;"></div>
+                <div class="color-ball" data-color="yellow" style="background-color: #ffd93d;"></div>
+                <div class="color-ball" data-color="purple" style="background-color: #9d65c9;"></div>
+            </div>
+
+            <div class="game-controls">
+                <button class="control-button" id="resetBtn">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Reset Colors</span>
+                </button>
+                <button class="control-button" id="newGameBtn">
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">New Game</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="instructions-card">
+            <h3>🎮 How to Play</h3>
+            <div class="instructions-content">
+                <p>Drag the colored balls into their matching containers.</p>
+                <p>Each correct match gives you 10 points!</p>
+                <p>Complete all containers before time runs out.</p>
+            </div>
+            <div class="control-grid">
+                <div class="control-item">
+                    <kbd>Click & Drag</kbd>
+                    <span>Move Colors</span>
+                </div>
+                <div class="control-item">
+                    <kbd>60s</kbd>
+                    <span>Time Limit</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 GridPlay. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="../../privacy.html">Privacy Policy</a>
+            <a href="../../terms.html">Terms of Service</a>
+            <a href="../../contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <!-- Firebase Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            get, 
+            update, 
+            push 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        window.currentUserId = null;
+        window.isUserLoggedIn = false;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUserId = user.uid;
+                window.isUserLoggedIn = true;
+                loadHighScore();
+            } else {
+                window.isUserLoggedIn = false;
+                window.currentUserId = null;
+                const localHighScore = localStorage.getItem('colormatchHighScore') || 0;
+                document.getElementById('highScore').textContent = localHighScore;
+            }
+        });
+
+        async function loadHighScore() {
+            if (!window.currentUserId) return;
+            
+            try {
+                const snapshot = await get(ref(database, `gameSessions/${window.currentUserId}/colormatch/highScore`));
+                if (snapshot.exists()) {
+                    const highScore = snapshot.val();
+                    document.getElementById('highScore').textContent = highScore;
+                    localStorage.setItem('colormatchHighScore', highScore);
+                }
+            } catch (error) {
+                console.error("Error loading high score:", error);
+            }
+        }
+
+        window.saveGameToFirebase = async function(score, xpEarned, gameDuration) {
+            if (!window.currentUserId || !window.isUserLoggedIn) {
+                return 0;
+            }
+
+            try {
+                const updates = {};
+                const playTimeMinutes = Math.max(1, Math.floor(gameDuration / 60));
+                
+                const playerRef = ref(database, `playerStats/${window.currentUserId}`);
+                const playerSnapshot = await get(playerRef);
+                
+                if (!playerSnapshot.exists()) return 0;
+                
+                const playerData = playerSnapshot.val();
+                
+                const currentHighScore = await get(ref(database, `gameSessions/${window.currentUserId}/colormatch/highScore`));
+                const highScoreValue = currentHighScore.exists() ? currentHighScore.val() : 0;
+                
+                if (score > highScoreValue) {
+                    updates[`gameSessions/${window.currentUserId}/colormatch/highScore`] = score;
+                }
+                
+                const currentMinutes = playerData.minutesPlayed || 0;
+                updates[`playerStats/${window.currentUserId}/minutesPlayed`] = currentMinutes + playTimeMinutes;
+                
+                updates[`playerStats/${window.currentUserId}/gamesCompleted`] = (playerData.gamesCompleted || 0) + 1;
+                
+                const currentXp = playerData.currentXp || 0;
+                updates[`playerStats/${window.currentUserId}/currentXp`] = currentXp + xpEarned;
+                
+                const sessionData = {
+                    score: score,
+                    duration: playTimeMinutes,
+                    xpEarned: xpEarned,
+                    timestamp: new Date().toISOString()
+                };
+                
+                await push(ref(database, `gameSessions/${window.currentUserId}/colormatch/sessions`), sessionData);
+                
+                await update(ref(database), updates);
+                
+                return xpEarned;
+                
+            } catch (error) {
+                console.error("Error saving game:", error);
+                return 0;
+            }
+        };
+    </script>
+
+    <script src="colormatch.js"></script>
+</body>
+</html>
