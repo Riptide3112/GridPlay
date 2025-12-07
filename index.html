@@ -77,7 +77,6 @@
         <div class="footer-links">
             <a href="/privacy.html">Privacy Policy</a>
             <a href="/terms.html">Terms of Service</a>
-            <a href="../../contact.html">Contact Us</a>
         </div>
     </footer>
 
@@ -103,53 +102,53 @@
                 });
             }
         });
-        document.addEventListener('DOMContentLoaded', () => {
-    // --- Logica de Navigare Cont (Răspunde cerinței din index.html) ---
-    const accountLink = document.getElementById('account-link');
-
-    if (accountLink) {
-        // Prevenim comportamentul implicit al link-ului
-        accountLink.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Verificăm starea de autentificare în localStorage
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-            if (isLoggedIn === 'true') {
-                // Dacă utilizatorul este logat, îl trimitem la pagina contului
-                window.location.href = '/account.html';
-            } else {
-                // Dacă NU este logat, îl trimitem la pagina de login
-                // NOTA: Schimbați /login.html cu adresa reală a paginii de login (ex: /account.html)
-                window.location.href = '/login.html';
-            }
-        });
-    }
-
-    // --- Logica de Navigare Jocuri (Nou Adăugat) ---
-    const gameCards = document.querySelectorAll('.game-card');
-
-    gameCards.forEach(card => {
-        const playButton = card.querySelector('.play-btn');
-        const gameUrl = card.getAttribute('data-game');
-
-        if (playButton && gameUrl) {
-            // Adaugă ascultător de evenimente pe butonul "Play Now"
-            playButton.addEventListener('click', () => {
-                window.location.href = gameUrl;
-            });
-
-            // Opțional: Deschide jocul la click pe întreg cardul
-            // card.addEventListener('click', () => {
-            //     window.location.href = gameUrl;
-            // });
-        }
-    });
-});
     </script>
     <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ... codul tău pentru meniu hamburger și account link ...
+
+        // Handler pentru butoanele Play Now - VERSIUNEA CORECTĂ
+        document.querySelectorAll('.play-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const gameCard = this.closest('.game-card');
+                const gameUrl = gameCard.getAttribute('data-game');
+                
+                if (gameUrl) {
+                    console.log('Attempting to navigate to:', gameUrl);
+                    
+                    // Încearcă mai întâi să navigheze
+                    window.location.href = gameUrl;
+                    
+                    // Dacă nu merge după 100ms, încercă cu slash în față
+                    setTimeout(() => {
+                        if (window.location.pathname === '/' || 
+                            window.location.pathname.includes('index')) {
+                            console.log('First attempt failed, trying with leading slash...');
+                            window.location.href = '/' + gameUrl;
+                        }
+                    }, 100);
+                } else {
+                    console.error('No game URL found');
+                    alert('Game is currently unavailable. Please try another game.');
+                }
+            });
+        });
+
+        // Adaugă și event listener pentru click pe întregul card (opțional)
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Verifică dacă nu s-a dat click pe butonul Play Now
+                if (!e.target.closest('.play-btn')) {
+                    const gameUrl = this.getAttribute('data-game');
+                    if (gameUrl) {
+                        window.location.href = gameUrl;
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 
-
 </html>
-
