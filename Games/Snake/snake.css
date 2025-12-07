@@ -1,158 +1,172 @@
+/* snake.css - COMPLET MODERNIZAT CU LAYOUT VERTICAL */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
     color: #5a4a3a;
     min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Stiluri generale care se aplică pe Mobile (default) */
+/* HEADER MOBILE-FIRST */
 header {
     background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
-    padding: 1.5rem 1rem; /* Padding mobil */
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 1rem;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-radius: 0 0 30px 30px;
+    border-radius: 0 0 20px 20px;
 }
 
 .header-content {
     max-width: 1400px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between; /* Pe mobil, le punem la capete */
-    align-items: center;
-    position: relative;
-    padding: 0 1rem; /* Asigură spațiul interior pe mobil */
-}
-
-.logo {
-    font-size: 1.8rem; /* Dimensiune logo pe mobil */
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
-    transition: transform 0.3s ease;
-    letter-spacing: 2px;
-}
-
-.logo:hover {
-    transform: scale(1.05);
-}
-
-/* Poziții statice pe mobil */
-.back-btn, .account-btn {
-    position: static;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    display: flex; 
+    justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
 }
 
-.back-btn {
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
     color: #fff;
-    background: rgba(255,255,255,0.2);
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-.back-btn:hover {
-    background: rgba(255,255,255,0.3);
-    transform: translateY(-2px);
+.logo:active {
+    transform: scale(0.95);
+}
+
+.back-btn, .account-btn {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 15px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
 }
 
 .account-btn {
-    color: #fff;
     background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
-    box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+    box-shadow: 0 3px 12px rgba(255,107,157,0.3);
 }
 
-.account-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(255,107,157,0.5);
+.back-btn:active, .account-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 }
 
+/* GAME CONTAINER */
 .game-container {
     max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem; /* Padding mobil */
+    margin: 1rem auto;
+    padding: 0 1rem;
 }
 
 .game-header {
     background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
-    border-radius: 30px;
-    padding: 1.5rem; /* Padding mobil */
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .game-title-section {
     display: flex;
-    flex-direction: column; /* Stivă pe mobil */
     align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .game-icon-large {
-    font-size: 3rem; 
+    font-size: 2.5rem;
     width: 70px;
     height: 70px;
     background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
-    border-radius: 25px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 25px rgba(255,107,157,0.3);
+    box-shadow: 0 6px 20px rgba(255,107,157,0.3);
+    flex-shrink: 0;
 }
 
 .game-title-section h1 {
-    font-size: 2rem; 
+    font-size: 1.8rem;
     color: #7a5d4a;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
 }
 
 .game-title-section p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #9a8171;
 }
 
+/* STATS - VERTICAL LAYOUT PE MOBILE */
 .stats-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 coloane pe mobil */
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
 }
 
 .stat-card {
-    background: rgba(255,255,255,0.6);
-    border-radius: 20px;
-    padding: 1rem;
+    background: rgba(255,255,255,0.7);
+    border-radius: 15px;
+    padding: 1.2rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 100%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .stat-card:hover {
     transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
 .stat-icon {
     font-size: 2rem;
+    min-width: 50px;
+    text-align: center;
 }
 
 .stat-info {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .stat-label {
@@ -160,315 +174,157 @@ header {
     color: #9a8171;
     font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
 }
 
 .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #7a5d4a;
-    font-weight: bold;
+    font-weight: 800;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
+/* GAME AREA */
 .game-area {
-    display: grid;
-    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .canvas-container {
     position: relative;
-    display: flex;
-    justify-content: center;
     background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
-    border-radius: 30px;
-    padding: 1rem; /* Padding mobil */
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    aspect-ratio: 1;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 #gameCanvas {
-    border-radius: 20px;
-    box-shadow: inset 0 4px 20px rgba(0,0,0,0.05);
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
     background: #fffbf5;
     display: block;
+    touch-action: none;
 }
 
-/* Overlays (Păstrăm stilurile mari) */
+/* GAME OVERLAYS */
 .game-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(245, 230, 211, 0.98);
+    background: rgba(245, 230, 211, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 30px;
+    border-radius: 20px;
     z-index: 10;
+    backdrop-filter: blur(5px);
 }
 
 .overlay-content {
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 300px;
 }
 
 .overlay-content h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #7a5d4a;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .overlay-content p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #9a8171;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
-.game-over-icon {
-    font-size: 5rem;
+.snake-icon, .game-over-icon {
+    font-size: 3rem;
     margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 .final-score {
-    font-size: 1.5rem !important;
+    font-size: 1.3rem !important;
 }
 
 .final-score span {
     color: #ff6b9d;
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .hidden {
     display: none !important;
 }
 
+/* BUTTONS */
 .primary-btn {
-    padding: 1rem 3rem;
+    padding: 1rem 2.5rem;
     background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
     color: white;
     border: none;
-    border-radius: 25px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(255,107,157,0.4);
-}
-
-.primary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255,107,157,0.6);
-}
-
-.game-controls {
-    display: flex;
-    flex-direction: column; /* Stivă pe mobil */
-    gap: 1rem;
-    justify-content: center;
-}
-
-.control-button {
-    flex: 1;
-    max-width: 100%; /* Lățime maximă pe mobil */
-    padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
-    color: white;
-    border: none;
     border-radius: 20px;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(201,168,143,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(255,107,157,0.3);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    max-width: 250px;
 }
 
-.btn-icon {
-    font-size: 1.3rem;
+.primary-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 10px rgba(255,107,157,0.4);
 }
 
-.control-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(201,168,143,0.6);
-}
-
-.instructions-card {
-    background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
-    border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.instructions-card h3 {
-    font-size: 1.5rem;
-    color: #7a5d4a;
-    margin-bottom: 1.5rem;
-}
-
-.control-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* O singură coloană pe mobil */
-    gap: 1.5rem;
-}
-
-.control-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.control-item kbd {
-    background: rgba(122, 93, 74, 0.1);
-    padding: 0.8rem 1.2rem;
-    border-radius: 12px;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    color: #7a5d4a;
-    border: 2px solid rgba(122, 93, 74, 0.2);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    font-size: 1rem;
-}
-
-.control-item span {
-    color: #9a8171;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-footer {
-    background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
-    color: white;
-    text-align: center;
-    padding: 2rem;
-    margin-top: 4rem;
-    border-radius: 30px 30px 0 0;
-}
-
-footer p {
-    margin-bottom: 1rem;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.3s ease;
-}
-
-.footer-links a:hover {
-    opacity: 0.7;
-}
-
-.ad-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 1rem;
-    text-align: center;
-    min-height: 100px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9a8171;
-}
-
-/* Stiluri adiționale (XP, Timer, etc.) - Păstrate la fel */
-.xp-notification-text {
-    animation: pulse 1s infinite;
-    font-size: 1.1em;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.stats-row .stat-card:last-child {
-    background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
-    color: white;
-}
-
-.stats-row .stat-card:last-child .stat-label {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.rewards-info {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(255, 154, 118, 0.1);
-    border-radius: 10px;
-    border-left: 4px solid #ff6b9d;
-}
-
-/* ... (restul stilurilor rewards-info, saveExitBtn, secondary-btn, timer) ... */
-
-#saveExitBtn {
-    background: linear-gradient(135deg, #4CAF50 0%, #2d7a2f 100%);
-}
-
-#saveExitBtn:hover {
-    background: linear-gradient(135deg, #45a049 0%, #27662a 100%);
-}
-
-.secondary-btn {
-    padding: 10px 20px;
-    background: #f0f0f0;
-    color: #5a4a3a;
-    border: none;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.secondary-btn:hover {
-    background: #e0e0e0;
-    transform: translateY(-2px);
-}
-
-#timer {
-    color: #7a5d4a;
-    font-weight: bold;
-}
-
-/* Touch controls (Mobile-Only prin Media Query) */
+/* TOUCH CONTROLS */
 .touch-controls {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.8rem;
     align-items: center;
-}
-
-.touch-controls.hidden {
-    display: none;
+    touch-action: none;
+    width: 100%;
 }
 
 .touch-row {
     display: flex;
-    gap: 20px;
+    gap: 1rem;
     justify-content: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .touch-btn {
-    width: 60px; 
-    height: 60px; 
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
     color: white;
     border: none;
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -476,7 +332,27 @@ footer p {
     box-shadow: 0 4px 15px rgba(201,168,143,0.4);
     transition: all 0.1s ease;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
+}
+
+.touch-btn:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.2s ease;
+}
+
+.touch-btn:active:after {
+    transform: scale(1);
 }
 
 .touch-btn:active {
@@ -485,52 +361,122 @@ footer p {
 }
 
 .action-btn {
-    width: 50px; 
-    height: 50px; 
-    font-size: 1.3rem; 
+    width: 60px;
+    height: 60px;
+    font-size: 1.4rem;
     background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
 }
 
-/* Level up overlay */
-#levelUpOverlay {
-    background: rgba(255, 249, 240, 0.98);
+/* GAME CONTROLS */
+.game-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
 }
 
-.level-up-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    animation: levelUp 1s ease-out;
+.control-button {
+    flex: 1;
+    max-width: 200px;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 12px rgba(201,168,143,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
 }
 
-/* ... (restul stilurilor levelUp și xp-info) ... */
-
-@keyframes levelUp {
-    0% {
-        transform: scale(0.5) rotate(0deg);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.2) rotate(180deg);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1) rotate(360deg);
-        opacity: 1;
-    }
+.control-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 8px rgba(201,168,143,0.4);
 }
 
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* INSTRUCTIONS */
+.instructions-card {
+    background: linear-gradient(135deg, #fff9f0 0%, #f5e8dc 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    width: 100%;
+}
+
+.instructions-card h3 {
+    font-size: 1.4rem;
+    color: #7a5d4a;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.control-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+}
+
+.control-item kbd {
+    background: rgba(122, 93, 74, 0.1);
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #7a5a3a;
+    border: 2px solid rgba(122, 93, 74, 0.15);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-size: 1rem;
+    width: 100%;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-item span {
+    color: #7a5d4a;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* XP INFO */
 .xp-info {
     margin-top: 1.5rem;
-    padding: 1rem;
+    padding: 1.2rem;
     background: rgba(255, 154, 118, 0.1);
-    border-radius: 10px;
+    border-radius: 12px;
     border-left: 4px solid #ff6b9d;
 }
 
 .xp-info h4 {
     color: #7a5d4a;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .xp-info ul {
@@ -539,11 +485,12 @@ footer p {
 }
 
 .xp-info li {
-    padding: 0.3rem 0;
+    padding: 0.5rem 0;
     color: #5a4a3a;
     position: relative;
-    padding-left: 1.5rem;
-    font-size: 0.9rem;
+    padding-left: 1.8rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .xp-info li:before {
@@ -552,102 +499,269 @@ footer p {
     position: absolute;
     left: 0;
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
-/* Snake icon animation */
-.snake-icon {
-    font-size: 4rem;
+/* FOOTER */
+footer {
+    background: linear-gradient(135deg, #d4b5a0 0%, #c9a88f 100%);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 20px 20px 0 0;
+}
+
+footer p {
     margin-bottom: 1rem;
-    animation: pulse 2s infinite;
+    font-size: 0.9rem;
 }
 
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
 
-/* ================================================================= */
-/* MEDIA QUERY PENTRU DESKTOP (Aplică doar stilurile originale de PC) */
-/* ================================================================= */
-@media (min-width: 769px) {
-    
-    header {
-        padding: 1.5rem 2rem;
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.footer-links a:active {
+    opacity: 0.7;
+}
+
+/* NOTIFICAȚII XP */
+.xp-notification {
+    position: fixed;
+    top: 80px;
+    right: 1rem;
+    background: linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%);
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 1000;
+    animation: slideInRight 0.3s ease-out, fadeOut 3s ease-in 2s forwards;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: calc(100% - 2rem);
+}
+
+.xp-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.xp-icon {
+    font-size: 1.3rem;
+    animation: xpPulse 1s infinite;
+}
+
+@keyframes xpPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
     }
-    
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* RESPONSIVE DESIGN */
+
+/* TABLET (768px și mai sus) */
+@media (min-width: 768px) {
     .header-content {
-        /* Centrarea elementelor pe desktop */
-        justify-content: center;
-        padding: 0; 
+        padding: 0 2rem;
     }
     
     .logo {
-        font-size: 2.5rem; /* Dimensiune logo desktop */
-    }
-
-    /* Repunerea butoanelor în poziția absolută pe desktop */
-    .back-btn {
-        position: absolute;
-        left: 2rem;
-        padding: 0.7rem 1.5rem;
-        font-size: 1rem;
+        font-size: 2.2rem;
     }
     
-    .account-btn {
-        position: absolute;
-        right: 2rem;
-        padding: 0.7rem 1.8rem;
+    .back-btn, .account-btn {
+        padding: 0.8rem 1.5rem;
         font-size: 1rem;
     }
     
     .game-container {
         padding: 0 2rem;
     }
-
+    
     .game-header {
-        padding: 2.5rem;
+        padding: 2rem;
     }
-
-    .game-title-section {
-        flex-direction: row; /* Revenire la rând pe desktop */
-        text-align: left;
+    
+    .game-title-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .game-title-section p {
+        font-size: 1.1rem;
     }
     
     .game-icon-large {
-        font-size: 4rem; 
         width: 90px;
         height: 90px;
+        font-size: 3.5rem;
     }
-
-    .game-title-section h1 {
-        font-size: 2.5rem; 
-    }
-
+    
+    /* STATS - 2 pe rând pe tabletă */
     .stats-row {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 3+ coloane pe desktop */
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .stat-card {
-        padding: 1.5rem;
+        flex: 1;
+        min-width: 180px;
+        max-width: 220px;
     }
     
     .stat-icon {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
-
+    
     .stat-value {
         font-size: 2rem;
     }
-
+    
     .canvas-container {
-        padding: 2rem;
+        max-width: 500px;
     }
-
-    .game-controls {
-        flex-direction: row; /* Revenire la rând pe desktop */
+    
+    .touch-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 2.2rem;
     }
-
-    .control-button {
-        max-width: 200px; /* Lățime maximă pe desktop */
+    
+    .action-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1.6rem;
     }
     
     .control-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 3+ coloane pe desktop */
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* DESKTOP (1024px și mai sus) */
+@media (min-width: 1024px) {
+    .game-area {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+        align-items: start;
+    }
+    
+    .canvas-container {
+        max-width: 100%;
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+    
+    .touch-controls {
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: 0;
+        max-width: 350px;
+    }
+    
+    .game-controls {
+        grid-column: 2;
+        grid-row: 2;
+        flex-direction: column;
+        max-width: 350px;
+    }
+    
+    .instructions-card {
+        grid-column: 2;
+        grid-row: 3;
+        margin-top: 2rem;
+    }
+    
+    /* STATS - 4 pe rând pe desktop */
+    .stats-row {
+        grid-template-columns: repeat(4, 1fr);
+        flex-wrap: nowrap;
+    }
+    
+    .stat-card {
+        min-width: 160px;
+    }
+    
+    .touch-row {
+        max-width: 350px;
+    }
+}
+
+/* LANDSCAPE MOBILE */
+@media (max-height: 600px) and (orientation: landscape) {
+    .game-header {
+        padding: 1rem;
+    }
+    
+    .game-title-section {
+        margin-bottom: 1rem;
+    }
+    
+    .game-icon-large {
+        width: 50px;
+        height: 50px;
+        font-size: 2rem;
+    }
+    
+    .game-title-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .stats-row {
+        flex-direction: row;
+        gap: 0.8rem;
+    }
+    
+    .stat-card {
+        padding: 0.8rem;
+        min-width: 120px;
+    }
+    
+    .canvas-container {
+        aspect-ratio: 16/9;
+    }
+}
+
+/* ECRAANE FOARTE MARI */
+@media (min-width: 1400px) {
+    .game-container {
+        max-width: 1400px;
+    }
+    
+    .canvas-container {
+        max-width: 600px;
     }
 }
