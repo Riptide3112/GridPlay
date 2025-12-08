@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account | GridPlay</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8078638004568695"
-     crossorigin="anonymous"></script>
     <meta name="description" content="Manage your GridPlay account, view stats, and change your avatar.">
     <link rel="stylesheet" href="style.css">
 
@@ -86,19 +84,19 @@
         }
 
         .stats-card {
-            /* Mărim lățimea maximă pentru a permite grilei să se extindă */
             max-width: 750px;
-            /* Era 650px. Mărit la 750px */
             width: 100%;
-            /* ... alte stiluri ... */
+            background: linear-gradient(145deg, #fffcf6 0%, #f7f1eb 100%);
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            /* Mărim spațiul dintre rânduri și coloane */
             gap: 2rem 3rem;
-            /* Era 1.5rem 2.5rem. Mărit la 2rem 3rem */
             text-align: left;
             margin-bottom: 2.5rem;
         }
@@ -167,17 +165,9 @@
         /* --- SFÂRȘIT STILURI INSIGNA --- */
 
         /* Statistici (PĂSTRATE) */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem 2.5rem;
-            text-align: left;
-            margin-bottom: 2.5rem;
-        }
-
         .stat-item {
             background: #fdf5ec;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.7rem;
             border-radius: 15px;
             border-left: 5px solid #ff9a76;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -196,26 +186,11 @@
             font-weight: 700;
             color: #5a4a3a;
             line-height: 1.2;
-
-            /* MODIFICARE NOUĂ: Permite textului lung (fără spații) să se rupă
-            numai dacă depășește lățimea, prevenind ruperea neplăcută. */
             overflow-wrap: break-word;
             word-break: break-all;
-            /* Forțează ruperea în interiorul cuvântului */
-        }
-
-        /* Ajustare opțională a câmpului pentru a-i da mai mult loc */
-        .stat-item {
-            /* Mărim padding-ul lateral pentru o vizualizare mai aerisită */
-            padding: 1.2rem 1.7rem;
-            /* Era 1rem 1.5rem. Mărit la 1.2rem 1.7rem */
-            border-radius: 15px;
-            border-left: 5px solid #ff9a76;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         /* Bara de Progres și Buton Logout (PĂSTRATE) */
-
         .progress-section {
             margin-bottom: 3rem;
             text-align: left;
@@ -405,7 +380,6 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
-            /* Fundal semi-transparent */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -461,7 +435,6 @@
 
         #goodbye-message {
             font-size: 1.8rem;
-            /* Mărit puțin pentru vizibilitate */
             font-weight: 700;
             color: #7a5d4a;
             min-height: 40px;
@@ -519,22 +492,18 @@
                 </div>
 
                 <div class="stats-grid">
-
                     <div class="stat-item">
                         <span class="stat-label">Account Creation Date:</span>
                         <span id="account-creation-date" class="stat-value">...</span>
                     </div>
-
                     <div class="stat-item">
                         <span class="stat-label">Total Minutes Played:</span>
                         <span id="minutes-played" class="stat-value">...</span>
                     </div>
-
                     <div class="stat-item">
                         <span class="stat-label">Account Email:</span>
                         <span id="player-email" class="stat-value">...</span>
                     </div>
-
                     <div class="stat-item">
                         <span class="stat-label">Games Completed:</span>
                         <span id="games-completed" class="stat-value">...</span>
@@ -561,7 +530,6 @@
                 </div>
 
                 <button id="logout-btn" class="logout-btn">Log Out</button>
-
             </div>
         </section>
     </main>
@@ -585,376 +553,399 @@
         <div class="footer-links">
             <a href="/privacy.html">Privacy Policy</a>
             <a href="/terms.html">Terms of Service</a>
+            <a href="/contact.html">Contact</a>
         </div>
     </footer>
 
     <script type="module">
-    // --- 1. IMPORTURI FIREBASE ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import {
-        getAuth,
-        signOut,
-        onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+        // --- 1. IMPORTURI FIREBASE ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import {
+            getAuth,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            update,
+            get 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-    // --- 2. CONFIGURAȚIE FIREBASE ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
-        authDomain: "gridplay-5689a.firebaseapp.com",
-        databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "gridplay-5689a",
-        storageBucket: "gridplay-5689a.firebasestorage.app",
-        messagingSenderId: "822079861846",
-        appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
-    };
-
-    // Inițializează Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-
-    // --- 3. VARIABILE DOM ȘI CONSTANTE (ACTUALIZATE) ---
-    const AVATARS_BASE_PATH = "Avatars/";
-    const avatarModal = document.getElementById('avatar-modal');
-    const currentAvatarImg = document.getElementById('current-avatar');
-    const closeBtn = document.querySelector('.close-btn');
-    const avatarSelectorGrid = document.getElementById('avatar-selector');
-    const referralLinkInput = document.getElementById('referral-link');
-    const copyReferralBtn = document.getElementById('copy-referral-btn');
-    const playerStatsCard = document.getElementById('player-stats-card');
-    const loader = document.getElementById('loader');
-    const verificationBadge = document.getElementById('verification-badge');
-
-    // Variabile pentru Logout Animation
-    const logoutLoadingOverlay = document.getElementById('logout-loading-overlay');
-    const goodbyeText = document.getElementById('goodbye-text');
-
-    // Mesajele de rămas-bun (Engleză, Franceză, Germană, Spaniolă)
-    const goodbyeMessages = [
-        'See you later!',       // Engleză
-        'Au Revoir!',     // Franceză
-        'Auf Wiedersehen!', // Germană
-        '¡Hasta luego!'   // Spaniolă
-    ];
-    let messageIndex = 0;
-
-    // Variabila globală pentru a stoca listenerul RTDB și a-l opri la logout
-    let playerStatsListener = null;
-
-    // --- FUNCTII PENTRU SISTEMUL DE NIVELURI ---
-    function calculateXPForLevel(level) {
-        // Level 1: 0-500 XP (necesar pentru level 2)
-        // Level 2: 500-600 XP (necesar pentru level 3)
-        // Level 3: 600-700 XP (necesar pentru level 4)
-        // etc...
-        
-        if (level <= 1) {
-            return 500; // Pentru a trece de la nivelul 1 la 2
-        } else {
-            // Pentru fiecare nivel ulterior, crește cu 100 XP față de nivelul anterior
-            return 500 + (level - 1) * 100;
-        }
-    }
-
-    function calculateLevel(currentXp) {
-        let level = 1;
-        let xpNeededForNextLevel = calculateXPForLevel(level);
-        let xpAccumulated = currentXp;
-        
-        // Cat timp XP-ul curent este mai mare sau egal cu XP-ul necesar pentru nivelul urmator
-        while (xpAccumulated >= xpNeededForNextLevel) {
-            level++;
-            xpAccumulated -= xpNeededForNextLevel;
-            xpNeededForNextLevel = calculateXPForLevel(level);
-        }
-        
-        return {
-            level: level,
-            currentXp: xpAccumulated,
-            nextLevelXp: xpNeededForNextLevel
+        // --- 2. CONFIGURAȚIE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtPh9tyLEg4BBu2Pf-QY-vE3yzaHgSzXk",
+            authDomain: "gridplay-5689a.firebaseapp.com",
+            databaseURL: "https://gridplay-5689a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "gridplay-5689a",
+            storageBucket: "gridplay-5689a.firebasestorage.app",
+            messagingSenderId: "822079861846",
+            appId: "1:822079861846:web:93b9460ef8da963a31f7f7"
         };
-    }
 
-    // --- FUNCTII MODAL și UTILAJE (PĂSTRATE) ---
-    const openAvatarModal = () => { avatarModal.style.display = 'block'; };
-    const closeAvatarModal = () => { avatarModal.style.display = 'none'; };
+        // Inițializează Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
-    const copyLinkToClipboard = async () => {
-        const link = referralLinkInput.value;
-        try {
-            await navigator.clipboard.writeText(link);
-            copyReferralBtn.innerHTML = '<span class="icon">✅</span> Copied!';
-            copyReferralBtn.style.background = '#c9a88f';
+        // --- 3. VARIABILE DOM ȘI CONSTANTE ---
+        const AVATARS_BASE_PATH = "Avatars/";
+        const avatarModal = document.getElementById('avatar-modal');
+        const currentAvatarImg = document.getElementById('current-avatar');
+        const closeBtn = document.querySelector('.close-btn');
+        const avatarSelectorGrid = document.getElementById('avatar-selector');
+        const referralLinkInput = document.getElementById('referral-link');
+        const copyReferralBtn = document.getElementById('copy-referral-btn');
+        const playerStatsCard = document.getElementById('player-stats-card');
+        const loader = document.getElementById('loader');
+        const verificationBadge = document.getElementById('verification-badge');
+        const logoutLoadingOverlay = document.getElementById('logout-loading-overlay');
+        const goodbyeText = document.getElementById('goodbye-text');
 
-            setTimeout(() => {
-                copyReferralBtn.innerHTML = '<span class="icon">📋</span> Copy Link';
-                copyReferralBtn.style.background = 'linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%)';
-            }, 2000);
+        // Mesajele de rămas-bun
+        const goodbyeMessages = [
+            'See you later!',
+            'Au Revoir!',
+            'Auf Wiedersehen!',
+            '¡Hasta luego!'
+        ];
+        let messageIndex = 0;
 
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
+        // Variabila globală pentru a stoca listenerul RTDB
+        let playerStatsListener = null;
+
+        // --- FUNCTII PENTRU SISTEMUL DE NIVELURI ---
+        function calculateXPForLevel(level) {
+            if (level <= 1) {
+                return 500;
+            } else {
+                return 500 + (level - 1) * 100;
+            }
         }
-    };
 
-    // Funcția pentru Animația de Text la Logout
-    const startGoodbyeAnimation = () => {
-        // Schimbă textul la fiecare 1000ms (1 secundă)
-        const intervalId = setInterval(() => {
-            goodbyeText.textContent = goodbyeMessages[messageIndex];
-            messageIndex = (messageIndex + 1) % goodbyeMessages.length;
-        }, 1000); // Rotația mesajului se face la fiecare 1s
+        function calculateLevel(currentXp) {
+            let level = 1;
+            let xpNeededForNextLevel = calculateXPForLevel(level);
+            let xpAccumulated = currentXp;
 
-        // Funcția returnată poate fi folosită pentru a opri animația
-        return () => clearInterval(intervalId);
-    };
+            while (xpAccumulated >= xpNeededForNextLevel) {
+                level++;
+                xpAccumulated -= xpNeededForNextLevel;
+                xpNeededForNextLevel = calculateXPForLevel(level);
+            }
 
-    // --- LOGICA SCHIMBĂRII AVATARULUI (RTDB) ---
-    const setupAvatarSelector = (playerId) => {
-        document.querySelectorAll('.avatar-option').forEach(img => {
-            // Eliminăm ascultătorii anteriori pentru a preveni duplicarea
-            const newImg = img.cloneNode(true);
-            img.parentNode.replaceChild(newImg, img);
+            return {
+                level: level,
+                currentXp: xpAccumulated,
+                nextLevelXp: xpNeededForNextLevel
+            };
+        }
 
-            newImg.addEventListener('click', async (e) => {
-                const newAvatarName = e.target.getAttribute('data-avatar');
+        // --- FUNCTII UTILITARE ---
+        const openAvatarModal = () => { avatarModal.style.display = 'block'; };
+        const closeAvatarModal = () => { avatarModal.style.display = 'none'; };
 
-                // 1. Schimbă selecția vizuală în modal
-                document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
-                e.target.classList.add('selected');
+        const copyLinkToClipboard = async () => {
+            const link = referralLinkInput.value;
+            try {
+                await navigator.clipboard.writeText(link);
+                copyReferralBtn.innerHTML = '<span class="icon">✅</span> Copied!';
+                copyReferralBtn.style.background = '#c9a88f';
 
-                // 2. Salvează în Firebase Realtime Database
-                try {
-                    await update(ref(database, 'playerStats/' + playerId), {
-                        avatar: newAvatarName // Salvează valoarea '1.jpg', '2.jpg', etc.
+                setTimeout(() => {
+                    copyReferralBtn.innerHTML = '<span class="icon">📋</span> Copy Link';
+                    copyReferralBtn.style.background = 'linear-gradient(135deg, #ff9a76 0%, #ff6b9d 100%)';
+                }, 2000);
+
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        };
+
+        const startGoodbyeAnimation = () => {
+            const intervalId = setInterval(() => {
+                goodbyeText.textContent = goodbyeMessages[messageIndex];
+                messageIndex = (messageIndex + 1) % goodbyeMessages.length;
+            }, 1000);
+
+            return () => clearInterval(intervalId);
+        };
+
+        // --- LOGICA SCHIMBĂRII AVATARULUI ---
+        const setupAvatarSelector = (playerId) => {
+            document.querySelectorAll('.avatar-option').forEach(img => {
+                const newImg = img.cloneNode(true);
+                img.parentNode.replaceChild(newImg, img);
+
+                newImg.addEventListener('click', async (e) => {
+                    const newAvatarName = e.target.getAttribute('data-avatar');
+
+                    document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+                    e.target.classList.add('selected');
+
+                    try {
+                        await update(ref(database, 'playerStats/' + playerId), {
+                            avatar: newAvatarName
+                        });
+                        console.log(`Avatar updated: ${newAvatarName}`);
+                    } catch (error) {
+                        console.error("Error saving avatar:", error);
+                        alert("Error saving avatar. Please try again.");
+                    }
+
+                    currentAvatarImg.src = AVATARS_BASE_PATH + newAvatarName;
+                    closeAvatarModal();
+                });
+            });
+        };
+
+        // --- LOGICA DE ÎNCĂRCARE A DATELOR ---
+        const loadPlayerStats = (playerId, isEmailVerified) => {
+            loader.style.display = 'block';
+            playerStatsCard.style.display = 'none';
+
+            const playerRef = ref(database, 'playerStats/' + playerId);
+
+            // Setează Insigna de Verificare
+            if (isEmailVerified) {
+                verificationBadge.textContent = 'Verified ✅';
+                verificationBadge.className = 'verification-badge verified';
+            } else {
+                verificationBadge.textContent = 'Unverified ⚠️';
+                verificationBadge.className = 'verification-badge unverified';
+            }
+
+            // Listener pentru datele utilizatorului
+            playerStatsListener = onValue(playerRef, async (snapshot) => {
+                const data = snapshot.val();
+
+                if (data) {
+                    // Utilizator existent - afișează datele
+                    console.log("✅ User data loaded:", data);
+                    
+                    const username = data.username || 'Player';
+                    const currentXp = data.currentXp || 0;
+                    const avatarFile = data.avatar || '1.jpg';
+                    const referralCode = data.referralCode || 'NONE';
+
+                    // Calculează nivelul
+                    const levelData = calculateLevel(currentXp);
+                    const currentLevel = levelData.level;
+                    const xpInCurrentLevel = levelData.currentXp;
+                    const nextLevelXp = levelData.nextLevelXp;
+
+                    // Actualizează UI
+                    currentAvatarImg.src = AVATARS_BASE_PATH + avatarFile;
+
+                    document.querySelectorAll('.avatar-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.getAttribute('data-avatar') === avatarFile) {
+                            opt.classList.add('selected');
+                        }
                     });
-                    console.log(`Avatar updated and saved to RTDB: ${newAvatarName}`);
-                } catch (error) {
-                    console.error("Error saving new avatar (check RTDB Rules):", error);
-                    alert("Eroare la salvarea avatarului. Verifică permisiunile RTDB.");
+
+                    referralLinkInput.value = `https://www.gridplay.ro/?ref=${referralCode}`;
+
+                    const xpPercent = (xpInCurrentLevel / nextLevelXp) * 100;
+                    const displayPercent = Math.min(100, xpPercent);
+                    document.getElementById('xp-progress-bar').style.width = `${displayPercent}%`;
+                    document.getElementById('current-xp').textContent = xpInCurrentLevel.toLocaleString();
+                    document.getElementById('next-level-xp').textContent = nextLevelXp.toLocaleString();
+                    document.getElementById('xp-level-title').textContent = `XP Progress to Next Level (Lvl ${currentLevel})`;
+
+                    document.getElementById('player-name').textContent = username;
+                    document.getElementById('account-creation-date').textContent = data.creationdate || 'Today';
+                    document.getElementById('minutes-played').textContent = `${data.minutesPlayed || 0} min`;
+                    document.getElementById('games-completed').textContent = (data.gamesCompleted || 0).toLocaleString();
+                    
+                    const userEmail = auth.currentUser ? auth.currentUser.email : 'Not available';
+                    document.getElementById('player-email').textContent = data.email || userEmail;
+
+                    // Ascunde loader și afișează cardul
+                    loader.style.display = 'none';
+                    playerStatsCard.style.display = 'block';
+
+                } else {
+                    // Utilizator nou - creează date implicite
+                    console.log("🆕 No user data found, creating default profile...");
+
+                    // Generează cod de referral
+                    const generateReferralCode = () => {
+                        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                        let code = '';
+                        for (let i = 0; i < 8; i++) {
+                            code += chars.charAt(Math.floor(Math.random() * chars.length));
+                        }
+                        return code;
+                    };
+
+                    // Date implicite pentru utilizator nou
+                    const defaultStats = {
+                        username: auth.currentUser?.displayName || 'Player' + Math.floor(Math.random() * 10000),
+                        email: auth.currentUser?.email || '',
+                        creationdate: new Date().toISOString().split('T')[0],
+                        currentXp: 0,
+                        level: 1,
+                        nextLevelXp: 500,
+                        minutesPlayed: 0,
+                        gamesCompleted: 0,
+                        avatar: '1.jpg',
+                        referralCode: generateReferralCode(),
+                        lastLogin: new Date().toISOString()
+                    };
+
+                    try {
+                        // Salvează datele implicite
+                        await update(ref(database, 'playerStats/' + playerId), defaultStats);
+                        console.log("✅ Default profile created successfully!");
+
+                        // Actualizează UI cu datele implicite
+                        document.getElementById('player-name').textContent = defaultStats.username;
+                        document.getElementById('account-creation-date').textContent = defaultStats.creationdate;
+                        document.getElementById('minutes-played').textContent = `${defaultStats.minutesPlayed} min`;
+                        document.getElementById('games-completed').textContent = defaultStats.gamesCompleted.toLocaleString();
+                        document.getElementById('player-email').textContent = defaultStats.email;
+                        document.getElementById('referral-link').value = `https://www.gridplay.ro/?ref=${defaultStats.referralCode}`;
+                        
+                        currentAvatarImg.src = AVATARS_BASE_PATH + defaultStats.avatar;
+                        
+                        document.getElementById('xp-progress-bar').style.width = '0%';
+                        document.getElementById('current-xp').textContent = '0';
+                        document.getElementById('next-level-xp').textContent = '500';
+                        document.getElementById('xp-level-title').textContent = `XP Progress to Next Level (Lvl 1)`;
+
+                        // Ascunde loader și afișează cardul
+                        loader.style.display = 'none';
+                        playerStatsCard.style.display = 'block';
+
+                    } catch (error) {
+                        console.error("❌ Error creating default data:", error);
+                        loader.style.display = 'none';
+                        
+                        if (error.code === 'PERMISSION_DENIED') {
+                            alert("Permission denied. Please check Firebase database rules.");
+                        } else {
+                            alert("Error creating profile. Please try again.");
+                        }
+                    }
+                }
+            }, (error) => {
+                console.error("❌ Firebase Read Error:", error);
+                loader.style.display = 'none';
+                
+                if (error.code === 'PERMISSION_DENIED') {
+                    alert("Database permission error. Please check rules.");
+                } else {
+                    alert("Connection error. Please check your internet.");
+                }
+            });
+        };
+
+        // --- FUNCȚIE PENTRU ADAUGAREA XP ---
+        window.addXP = function(playerId, xpToAdd) {
+            const playerRef = ref(database, 'playerStats/' + playerId);
+            
+            onValue(playerRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const currentXp = data.currentXp || 0;
+                    const newTotalXp = currentXp + xpToAdd;
+                    
+                    update(playerRef, {
+                        currentXp: newTotalXp
+                    }).then(() => {
+                        console.log(`Added ${xpToAdd} XP to player ${playerId}`);
+                        
+                        const oldLevelData = calculateLevel(currentXp);
+                        const newLevelData = calculateLevel(newTotalXp);
+                        
+                        if (newLevelData.level > oldLevelData.level) {
+                            console.log(`🎉 Player leveled up to ${newLevelData.level}`);
+                        }
+                    }).catch(error => {
+                        console.error("Error adding XP:", error);
+                    });
+                }
+            }, { onlyOnce: true });
+        };
+
+        // --- LOGICA PRINCIPALĂ ---
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verifică autentificarea
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("🔑 User authenticated:", user.uid);
+                    localStorage.setItem('isLoggedIn', 'true');
+
+                    const CURRENT_PLAYER_ID = user.uid;
+
+                    // Încarcă datele
+                    loadPlayerStats(CURRENT_PLAYER_ID, user.emailVerified);
+
+                    // Setează selectorul de avatar
+                    setupAvatarSelector(CURRENT_PLAYER_ID);
+                } else {
+                    console.log("🔒 User not authenticated");
+                    if (localStorage.getItem('isLoggedIn') === 'true') {
+                        localStorage.removeItem('isLoggedIn');
+                        if (playerStatsListener) {
+                            playerStatsListener();
+                        }
+                    } else {
+                        loader.style.display = 'none';
+                    }
+                }
+            });
+
+            // Event Listeners
+            currentAvatarImg.addEventListener('click', openAvatarModal);
+            closeBtn.addEventListener('click', closeAvatarModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == avatarModal) {
+                    closeAvatarModal();
+                }
+            });
+
+            copyReferralBtn.addEventListener('click', copyLinkToClipboard);
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                const logoutBtn = document.getElementById('logout-btn');
+                logoutBtn.disabled = true;
+                logoutBtn.textContent = 'Logging out...';
+
+                if (playerStatsListener) {
+                    playerStatsListener();
                 }
 
-                // 3. Actualizează avatarul principal
-                currentAvatarImg.src = AVATARS_BASE_PATH + newAvatarName;
-                closeAvatarModal();
+                logoutLoadingOverlay.classList.add('active');
+                const stopAnimation = startGoodbyeAnimation();
+
+                try {
+                    await signOut(auth);
+                    localStorage.removeItem('isLoggedIn');
+
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+
+                    stopAnimation();
+                    window.location.href = 'index.html';
+
+                } catch (error) {
+                    console.error("Logout failed:", error);
+                    stopAnimation();
+                    logoutLoadingOverlay.classList.remove('active');
+                    logoutBtn.disabled = false;
+                    logoutBtn.textContent = 'Log Out';
+                    alert("Logout failed. Please try again.");
+                }
             });
         });
-    };
-
-    // --- LOGICA DE ÎNCĂRCARE A DATELOR (RTDB) ---
-    const loadPlayerStats = (playerId, isEmailVerified) => {
-        loader.style.display = 'block';
-        playerStatsCard.style.display = 'none';
-
-        const playerRef = ref(database, 'playerStats/' + playerId);
-
-        // Setează Insigna de Verificare imediat
-        if (isEmailVerified) {
-            verificationBadge.textContent = 'Verified ✅';
-            verificationBadge.className = 'verification-badge verified';
-        } else {
-            verificationBadge.textContent = 'Unverified ⚠️';
-            verificationBadge.className = 'verification-badge unverified';
-        }
-
-        // Înlocuiește vechiul listener cu cel nou și salvează funcția de oprire (unsubscribe)
-        playerStatsListener = onValue(playerRef, (snapshot) => {
-            const data = snapshot.val();
-
-            if (data) {
-                const username = data.username || 'N/A';
-                const currentXp = data.currentXp || 0;
-                const avatarFile = data.avatar || '1.jpg';
-                const referralCode = data.referralCode || 'NONE';
-                
-                // CALCULEAZĂ NIVELUL PE BAZA XP-ULUI CURENT
-                const levelData = calculateLevel(currentXp);
-                const currentLevel = levelData.level;
-                const xpInCurrentLevel = levelData.currentXp;
-                const nextLevelXp = levelData.nextLevelXp;
-
-                // 1. Actualizează Avatarul Principal
-                currentAvatarImg.src = AVATARS_BASE_PATH + avatarFile;
-
-                // 2. Selectează vizual avatarul în Modal
-                document.querySelectorAll('.avatar-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                    if (opt.getAttribute('data-avatar') === avatarFile) {
-                        opt.classList.add('selected');
-                    }
-                });
-
-                // 3. Link de Referral
-                referralLinkInput.value = `https://www.gridplay.ro/?ref=${referralCode}`;
-
-                // 4. Actualizează Progresul XP (bazat pe XP-ul din nivelul curent)
-                const xpPercent = (xpInCurrentLevel / nextLevelXp) * 100;
-                const displayPercent = Math.min(100, xpPercent);
-                document.getElementById('xp-progress-bar').style.width = `${displayPercent}%`;
-                document.getElementById('current-xp').textContent = xpInCurrentLevel.toLocaleString();
-                document.getElementById('next-level-xp').textContent = nextLevelXp.toLocaleString();
-                document.getElementById('xp-level-title').textContent = `XP Progress to Next Level (Lvl ${currentLevel})`;
-
-                // 5. Actualizează celelalte date
-                document.getElementById('player-name').textContent = username;
-                document.getElementById('account-creation-date').textContent = data.creationdate || 'N/A';
-                document.getElementById('minutes-played').textContent = `${data.minutesPlayed || 0} min`;
-                document.getElementById('games-completed').textContent = (data.gamesCompleted || 0).toLocaleString();
-                document.getElementById('player-email').textContent = data.email || auth.currentUser.email || 'N/A';
-
-                // 6. ACTUALIZEAZĂ NIVELUL ÎN BAZA DE DATE (dacă a fost schimbat)
-                if (data.level !== currentLevel) {
-                    update(ref(database, 'playerStats/' + playerId), {
-                        level: currentLevel,
-                        nextLevelXp: nextLevelXp
-                    }).then(() => {
-                        console.log(`Level updated to ${currentLevel} in database`);
-                    }).catch(error => {
-                        console.error("Error updating level in database:", error);
-                    });
-                }
-
-                // Afișează conținutul
-                loader.style.display = 'none';
-                playerStatsCard.style.display = 'block';
-
-            } else {
-                console.warn("No player data found for ID:", playerId);
-                loader.style.display = 'none';
-                alert("A apărut o eroare la încărcarea datelor. Asigurați-vă că sunteți autentificat și că există date în Realtime Database pentru acest UID.");
-            }
-        }, (error) => {
-            console.error("Firebase Read Error:", error);
-            loader.style.display = 'none';
-            alert("Eroare de conexiune la baza de date. Verificați regulile de securitate.");
-        });
-    };
-
-    // --- FUNCȚIE PENTRU ADAUGAREA XP (FOLOSEȘTE ACEASTA ÎN JOCURI) ---
-    window.addXP = function(playerId, xpToAdd) {
-        const playerRef = ref(database, 'playerStats/' + playerId);
-        
-        onValue(playerRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const currentXp = data.currentXp || 0;
-                const newTotalXp = currentXp + xpToAdd;
-                
-                // Actualizează doar XP-ul total
-                update(playerRef, {
-                    currentXp: newTotalXp
-                }).then(() => {
-                    console.log(`Added ${xpToAdd} XP to player ${playerId}. Total XP: ${newTotalXp}`);
-                    
-                    // Verifică dacă jucătorul a trecut la un nou nivel
-                    const oldLevelData = calculateLevel(currentXp);
-                    const newLevelData = calculateLevel(newTotalXp);
-                    
-                    if (newLevelData.level > oldLevelData.level) {
-                        console.log(`🎉 Player leveled up! From level ${oldLevelData.level} to ${newLevelData.level}`);
-                        // Aici poți adăuga efecte vizuale sau notificări pentru level up
-                    }
-                }).catch(error => {
-                    console.error("Error adding XP:", error);
-                });
-            }
-        }, { onlyOnce: true });
-    };
-
-    // --- LOGICA LA ÎNCĂRCAREA PAGINII (EVENT LISTENERS) ---
-
-    // --- VERIFICARE SESIUNE FĂRĂ ALERTĂ ---
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn !== 'true') {
-        // Redirecționează fără alertă
-        window.location.href = 'login.html';
-    }
-    // --- SFÂRȘIT VERIFICARE SESIUNE ---
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // 1. Verifică starea de autentificare (Logica Principală)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Sesiune validă. Setează flag-ul pentru refresh-uri ulterioare.
-                localStorage.setItem('isLoggedIn', 'true');
-
-                const CURRENT_PLAYER_ID = user.uid;
-
-                // Încarcă datele din RTDB
-                loadPlayerStats(CURRENT_PLAYER_ID, user.emailVerified);
-
-                // Setează selectorul de avatar
-                setupAvatarSelector(CURRENT_PLAYER_ID);
-            } else {
-                // Dacă onAuthStateChanged detectează deconectarea
-                if (localStorage.getItem('isLoggedIn') === 'true') {
-                    localStorage.removeItem('isLoggedIn');
-                    if (playerStatsListener) {
-                        playerStatsListener();
-                    }
-                } else {
-                    loader.style.display = 'none';
-                }
-            }
-        });
-
-        // 2. Event Listeners Modal
-        currentAvatarImg.addEventListener('click', openAvatarModal);
-        closeBtn.addEventListener('click', closeAvatarModal);
-        window.addEventListener('click', (event) => {
-            if (event.target == avatarModal) {
-                closeAvatarModal();
-            }
-        });
-
-        // 3. Event Listener Copiere Link
-        copyReferralBtn.addEventListener('click', copyLinkToClipboard);
-
-        // 4. Event Listener Log Out (ACTUALIZAT cu animație custom)
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            const logoutBtn = document.getElementById('logout-btn');
-            logoutBtn.disabled = true;
-            logoutBtn.textContent = 'Deconectare...';
-
-            // 1. Oprim listener-ul RTDB
-            if (playerStatsListener) {
-                playerStatsListener();
-            }
-
-            // 2. Afișăm overlay-ul animat
-            logoutLoadingOverlay.classList.add('active');
-            const stopAnimation = startGoodbyeAnimation();
-
-            try {
-                // 3. Executăm deconectarea Firebase
-                await signOut(auth);
-
-                // 4. Șterge EXPLICIT FLAG-UL DE SESIUNE
-                localStorage.removeItem('isLoggedIn');
-
-                // Așteptăm 3 secunde pentru ca animația să ruleze
-                await new Promise(resolve => setTimeout(resolve, 3000));
-
-                // 5. Oprim animația și redirecționăm către index.html
-                stopAnimation();
-                window.location.href = 'index.html';
-
-            } catch (error) {
-                console.error("Logout failed:", error);
-
-                // În caz de eroare, curățăm și revenim la starea inițială
-                stopAnimation();
-                logoutLoadingOverlay.classList.remove('active');
-                logoutBtn.disabled = false;
-                logoutBtn.textContent = 'Log Out';
-                alert("Deconectarea a eșuat. Vă rugăm încercați din nou.");
-            }
-        });
-    });
-
-</script>
+    </script>
 </body>
-
-
 </html>
