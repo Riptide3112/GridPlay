@@ -745,7 +745,7 @@
                         }
                     });
 
-                    referralLinkInput.value = `https://www.gridplay.ro/?ref=${referralCode}`;
+                    referralLinkInput.value = `${referralCode}`;
 
                     const xpPercent = (xpInCurrentLevel / nextLevelXp) * 100;
                     const displayPercent = Math.min(100, xpPercent);
@@ -806,7 +806,7 @@
                         document.getElementById('minutes-played').textContent = `${defaultStats.minutesPlayed} min`;
                         document.getElementById('games-completed').textContent = defaultStats.gamesCompleted.toLocaleString();
                         document.getElementById('player-email').textContent = defaultStats.email;
-                        document.getElementById('referral-link').value = `https://www.gridplay.ro/?ref=${defaultStats.referralCode}`;
+                        document.getElementById('referral-link').value = `${defaultStats.referralCode}`;
                         
                         currentAvatarImg.src = AVATARS_BASE_PATH + defaultStats.avatar;
                         
@@ -949,3 +949,4 @@
     </script>
 </body>
 </html>
+
